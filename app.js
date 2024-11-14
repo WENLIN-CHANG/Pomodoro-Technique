@@ -40,3 +40,13 @@ function updateTimer() {
         }
     }
 }
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(currentTime / 60);
+    const seconds = currentTime % 60;
+    document.getElementById('time-display').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function updateCycleCount() {
+    document.getElementById('cycle-count').textContent = cycleCount;
+}
