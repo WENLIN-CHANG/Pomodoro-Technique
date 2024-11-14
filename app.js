@@ -5,6 +5,10 @@ let workTime = 25 * 60; // 25 分鐘 (以秒為單位)
 let breakTime = 5 * 60; // 5 分鐘 (以秒為單位)
 let currentTime = workTime;
 
+document.getElementById('start-btn').addEventListener('click', startTimer);
+document.getElementById('pause-btn').addEventListener('click', pauseTimer);
+document.getElementById('reset-btn').addEventListener('click', resetTimer);
+
 function startTimer() {
     timer = setInterval(updateTimer, 1000);
 }
