@@ -21,3 +21,22 @@ function resetTimer() {
     cycleCount = 0;
     updateCycleCount();
 }
+
+function updateTimer() {
+    currentTime--;
+    updateTimerDisplay();
+
+    if (currentTime === 0) {
+        if (isWorking) {
+            isWorking = false;
+            currentTime = breakTime;
+            alert('休息時間到了!');
+        } else {
+            isWorking = true;
+            currentTime = workTime;
+            cycleCount++;
+            updateCycleCount();
+            alert('工作時間到了!');
+        }
+    }
+}
