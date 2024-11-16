@@ -6,26 +6,33 @@ let breakTime = 5 * 60; // 5 分鐘 (以秒為單位)
 let currentTime = workTime;
 let todos = [];
 let currentTaskId = null;
+let isRunning = false;
 
 document.getElementById('start-btn').addEventListener('click', startTimer);
 document.getElementById('pause-btn').addEventListener('click', pauseTimer);
 document.getElementById('reset-btn').addEventListener('click', resetTimer);
 
 function startTimer() {
+    if (isRunning) {
+        return; // 如果已經在運行，就不要再次啟動
+    }
+    if (timer) {
+        clearInterval(timer);
+    }
+    isRunning = true;
     timer = setInterval(updateTimer, 1000);
 }
 
 function pauseTimer() {
     clearInterval(timer);
+    isRunning = false;
 }
 
 function resetTimer() {
     pauseTimer();
     currentTime = isWorking ? workTime : breakTime;
     updateTimerDisplay();
-    isWorking = true;
-    cycleCount = 0;
-    updateCycleCount();
+    isRunning = false;
 }
 
 function updateTimer() {
@@ -94,6 +101,10 @@ function completeTodo(id) {
 
 function startTask(id) {
     currentTaskId = id;
+    // 如果有正在運行的計時器，先停止它
+    if (timer) {
+        clearInterval(timer);
+    }
     resetTimer();
     startTimer();
     updateCurrentTask();
