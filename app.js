@@ -56,3 +56,86 @@ function updateTimerDisplay() {
 function updateCycleCount() {
     document.getElementById('cycle-count').textContent = cycleCount;
 }
+
+function addTodo(text) {
+    const todo = {
+        id: Date.now(),
+        text: text,
+        completed: false,
+        pomodoros: 0
+    };
+    todos.push(todo);
+    renderTodos();
+    saveTodos();
+}
+
+function deleteTodo(id) {
+    todos = todos.filter(todo => todo.id !== id);
+    renderTodos();
+    saveTodos();
+}
+
+function completeTodo(id) {
+    const todo = todos.find(todo => todo.id === id);
+    if (todo) {
+        todo.completed = !todo.completed;
+        renderTodos();
+        saveTodos();
+    }
+}
+
+function startTask(id) {
+    currentTaskId = id;
+    resetTimer();
+    startTimer();
+    updateCurrentTask();
+}
+
+function updateCurrentTask() {
+    const taskElement = document.querySelector('.current-task');
+    if (taskElement) {
+        taskElement.classList.remove('current-task');
+    }
+    
+    if (currentTaskId) {
+        const newTaskElement = document.querySelector(`[data-id="${currentTaskId}"]`);
+        if (newTaskElement) {
+            newTaskElement.classList.add('current-task');
+        }
+    }
+}
+
+function renderTodos() {
+    const todoList = document.getElementById('todo-list');
+    todoList.innerHTML = '';
+
+    todos.forEach(todo => {
+        const li = document.createElement('li');
+        li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+        li.setAttribute('data-id', todo.id);
+        
+        li.innerHTML = `
+            <span>${todo.text} (完成番茄數: ${todo.pomodoros})</span>
+            <div class="todo-controls">
+                <button class="start-task" onclick="startTask(${todo.id})">開始</button>
+                <button class="complete-task" onclick="completeTodo(${todo.id})">${todo.completed ? '取消完成' : '完成'}</button>
+                <button class="delete-task" onclick="deleteTodo(${todo.id})">刪除</button>
+            </div>
+        `;
+        
+        todoList.appendChild(li);
+    });
+    updateCurrentTask();
+}
+
+function saveTodos() {
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+function loadTodos() {
+    const savedTodos = localStorage.getItem('todos');
+    if (savedTodos) {
+        todos = JSON.parse(savedTodos);
+        renderTodos();
+    }
+}
