@@ -147,3 +147,30 @@ function loadTodos() {
         renderTodos();
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 載入已保存的待辦事項
+    loadTodos();
+    
+    // 添加待辦事項的事件監聽
+    document.getElementById('add-todo').addEventListener('click', function() {
+        const input = document.getElementById('todo-input');
+        const text = input.value.trim();
+        
+        if (text) {
+            addTodo(text);
+            input.value = '';
+        }
+    });
+
+    // 為輸入框添加按下 Enter 鍵的事件
+    document.getElementById('todo-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const text = this.value.trim();
+            if (text) {
+                addTodo(text);
+                this.value = '';
+            }
+        }
+    });
+});
