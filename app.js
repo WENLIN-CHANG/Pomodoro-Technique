@@ -34,6 +34,14 @@ function updateTimer() {
 
     if (currentTime === 0) {
         if (isWorking) {
+            if (currentTaskId) {
+                const currentTask = todos.find(todo => todo.id === currentTaskId);
+                if (currentTask) {
+                    currentTask.pomodoros++;
+                    saveTodos();
+                    renderTodos();
+                }
+            }
             isWorking = false;
             currentTime = breakTime;
             alert('休息時間到了!');
