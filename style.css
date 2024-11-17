@@ -260,3 +260,17 @@ button:disabled {
     font-weight: bold;
     color: #4CAF50;
 }
+
+.sessions-info {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
+}
+
+#sessions-count {
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    display: inline-block;
+}

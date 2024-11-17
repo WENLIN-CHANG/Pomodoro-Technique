@@ -13,6 +13,9 @@ let pomodoroStats = {
     maxFocusTime: 0,
     currentFocusStart: null
 };
+const longBreakTime = 15 * 60; // 15分鐘的長休息
+const sessionsBeforeLongBreak = 4; // 4個工作時段後進行長休息
+let completedSessions = 0; // 追蹤完成的工作時段數
 
 document.getElementById('start-btn').addEventListener('click', startTimer);
 document.getElementById('pause-btn').addEventListener('click', pauseTimer);
@@ -40,6 +43,8 @@ function resetTimer() {
     currentTime = isWorking ? workTime : breakTime;
     updateTimerDisplay();
     isRunning = false;
+    completedSessions = 0; // 重置完成的工作時段計數
+    updateSessionDisplay(); // 更新顯示
 }
 
 function updateTimer() {
@@ -48,6 +53,7 @@ function updateTimer() {
 
     if (currentTime === 0) {
         if (isWorking) {
+            // 工作時段結束
             if (currentTaskId) {
                 const currentTask = todos.find(todo => todo.id === currentTaskId);
                 if (currentTask) {
@@ -56,15 +62,28 @@ function updateTimer() {
                     renderTodos();
                 }
             }
+            
+            completedSessions++; // 增加完成的工作時段計數
+            
+            // 檢查是否需要進行長休息
+            if (completedSessions >= sessionsBeforeLongBreak) {
+                currentTime = longBreakTime;
+                completedSessions = 0; // 重置計數
+                alert('恭喜完成 4 個工作時段！現在進入 15 分鐘的長休息。');
+            } else {
+                currentTime = breakTime;
+                alert('休息時間到了!');
+            }
+            
             isWorking = false;
-            currentTime = breakTime;
-            alert('休息時間到了!');
-            updateStats();
-        } else {
-            isWorking = true;
-            currentTime = workTime;
             cycleCount++;
             updateCycleCount();
+            updateSessionDisplay(); // 新增：更新顯示
+            
+        } else {
+            // 休息時段結束
+            isWorking = true;
+            currentTime = workTime;
             alert('工作時間到了!');
         }
     }
@@ -250,6 +269,12 @@ function updateChart(type = 'daily') {
     });
 }
 
+// 添加新函數：更新工作時段顯示
+function updateSessionDisplay() {
+    const remainingSessions = sessionsBeforeLongBreak - completedSessions;
+    document.getElementById('sessions-count').textContent = `距離長休息還有 ${remainingSessions} 個工作時段`;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // 載入已保存的待辦事項
     loadTodos();
@@ -286,4 +311,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('weekly-stats').addEventListener('click', () => {
         updateChart('weekly');
     });
+
+    updateSessionDisplay(); // 初始化工作時段顯示
 });
