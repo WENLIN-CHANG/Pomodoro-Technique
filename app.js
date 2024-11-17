@@ -7,6 +7,12 @@ let currentTime = workTime;
 let todos = [];
 let currentTaskId = null;
 let isRunning = false;
+let pomodoroStats = {
+    daily: {},
+    weekly: {},
+    maxFocusTime: 0,
+    currentFocusStart: null
+};
 
 document.getElementById('start-btn').addEventListener('click', startTimer);
 document.getElementById('pause-btn').addEventListener('click', pauseTimer);
@@ -20,6 +26,7 @@ function startTimer() {
         clearInterval(timer);
     }
     isRunning = true;
+    pomodoroStats.currentFocusStart = Date.now();
     timer = setInterval(updateTimer, 1000);
 }
 
@@ -52,6 +59,7 @@ function updateTimer() {
             isWorking = false;
             currentTime = breakTime;
             alert('休息時間到了!');
+            updateStats();
         } else {
             isWorking = true;
             currentTime = workTime;
@@ -159,6 +167,89 @@ function loadTodos() {
     }
 }
 
+function loadStats() {
+    const savedStats = localStorage.getItem('pomodoroStats');
+    if (savedStats) {
+        pomodoroStats = JSON.parse(savedStats);
+        updateStatsDisplay();
+    }
+}
+
+function saveStats() {
+    localStorage.setItem('pomodoroStats', JSON.stringify(pomodoroStats));
+}
+
+function updateStats() {
+    const today = new Date().toLocaleDateString();
+    const weekNumber = getWeekNumber(new Date());
+    
+    // 更新每日統計
+    pomodoroStats.daily[today] = (pomodoroStats.daily[today] || 0) + 1;
+    
+    // 更新每週統計
+    pomodoroStats.weekly[weekNumber] = (pomodoroStats.weekly[weekNumber] || 0) + 1;
+    
+    // 更新最長專注時間
+    const currentFocusTime = Math.floor((Date.now() - pomodoroStats.currentFocusStart) / 1000 / 60);
+    pomodoroStats.maxFocusTime = Math.max(pomodoroStats.maxFocusTime, currentFocusTime);
+    
+    saveStats();
+    updateStatsDisplay();
+}
+
+function getWeekNumber(date) {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
+function updateStatsDisplay() {
+    const today = new Date().toLocaleDateString();
+    const weekNumber = getWeekNumber(new Date());
+    
+    // 更新今日完成週期
+    document.getElementById('today-cycles').textContent = pomodoroStats.daily[today] || 0;
+    
+    // 更新本週完成週期
+    document.getElementById('week-cycles').textContent = pomodoroStats.weekly[weekNumber] || 0;
+    
+    // 更新最長專注時間
+    document.getElementById('max-focus-time').textContent = 
+        `${pomodoroStats.maxFocusTime} 分鐘`;
+    
+    // 更新圖表
+    updateChart();
+}
+
+function updateChart(type = 'daily') {
+    const ctx = document.getElementById('statsChart').getContext('2d');
+    const data = type === 'daily' ? pomodoroStats.daily : pomodoroStats.weekly;
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(data).slice(-7),
+            datasets: [{
+                label: type === 'daily' ? '每日完成週期' : '每週完成週期',
+                data: Object.values(data).slice(-7),
+                backgroundColor: '#4CAF50',
+                borderColor: '#45a049',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // 載入已保存的待辦事項
     loadTodos();
@@ -183,5 +274,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.value = '';
             }
         }
+    });
+
+    loadStats();
+    
+    // 添加統計按鈕事件監聽器
+    document.getElementById('daily-stats').addEventListener('click', () => {
+        updateChart('daily');
+    });
+    
+    document.getElementById('weekly-stats').addEventListener('click', () => {
+        updateChart('weekly');
     });
 });
