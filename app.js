@@ -7,14 +7,7 @@ let currentTime = workTime;
 let todos = [];
 let currentTaskId = null;
 let isRunning = false;
-let audio = null;
-let currentMusic = null;
-const musicFiles = {
-    rain: 'audio/rain.mp3',
-    forest: 'audio/forest.mp3',
-    cafe: 'audio/cafe.mp3',
-    lofi: 'audio/lofi.mp3'
-};
+
 
 document.getElementById('start-btn').addEventListener('click', startTimer);
 document.getElementById('pause-btn').addEventListener('click', pauseTimer);
@@ -29,24 +22,15 @@ function startTimer() {
     }
     isRunning = true;
     timer = setInterval(updateTimer, 1000);
-    
-    // 如果是工作時間且有選擇音樂，就播放音樂
-    if (isWorking) {
-        const selectedMusic = document.getElementById('music-select').value;
-        if (selectedMusic) {
-            playMusic(selectedMusic);
-        }
-    }
 }
 
 function pauseTimer() {
     clearInterval(timer);
     isRunning = false;
-    stopMusic(); // 暫停時停止音樂
 }
 
 function resetTimer() {
-    pauseTimer(); // 這裡會同時停止音樂
+    pauseTimer();
     currentTime = isWorking ? workTime : breakTime;
     updateTimerDisplay();
     isRunning = false;
@@ -68,14 +52,12 @@ function updateTimer() {
             }
             isWorking = false;
             currentTime = breakTime;
-            handleStateChange(false); // 休息時停止音樂
             alert('休息時間到了!');
         } else {
             isWorking = true;
             currentTime = workTime;
             cycleCount++;
             updateCycleCount();
-            handleStateChange(true); // 工作時播放音樂
             alert('工作時間到了!');
         }
     }
@@ -203,94 +185,4 @@ document.addEventListener('DOMContentLoaded', function() {
            }
        }
    });
-
-   // 初始化音頻控制
-   initAudio();
-   
-   // 音樂選擇變更事件
-   document.getElementById('music-select').addEventListener('change', function() {
-       if (this.value && isWorking) {
-           playMusic(this.value);
-       } else {
-           stopMusic();
-       }
-   });
-
-   // 播放按鈕事件
-   document.getElementById('play-music').addEventListener('click', function() {
-       const selectedMusic = document.getElementById('music-select').value;
-       if (selectedMusic) {
-           playMusic(selectedMusic);
-       } else {
-           alert('請先選擇一個音樂');
-       }
-   });
-
-   // 停止按鈕事件
-   document.getElementById('stop-music').addEventListener('click', stopMusic);
-
-   // 音量控制事件
-   document.getElementById('volume-control').addEventListener('input', function() {
-       updateVolume(this.value);
-   });
-
-   // 初始禁用停止按鈕
-   document.getElementById('stop-music').disabled = true;
 });
-
-// 添加音樂控制相關函數
-function initAudio() {
-    audio = new Audio();
-    audio.loop = true; // 設置循環播放
-}
-
-function playMusic(musicType) {
-    if (!audio) {
-        initAudio();
-    }
-
-    // 如果正在播放同一個音樂，就不要重新加載
-    if (currentMusic !== musicType) {
-        audio.src = musicFiles[musicType];
-        currentMusic = musicType;
-    }
-
-    audio.play().catch(e => {
-        console.log('播放失敗:', e);
-        alert('無法播放音樂，請確保已選擇音樂並點擊播放按鈕。');
-    });
-
-    // 更新按鈕狀態
-    document.getElementById('play-music').disabled = true;
-    document.getElementById('stop-music').disabled = false;
-}
-
-function stopMusic() {
-    if (audio) {
-        audio.pause();
-        audio.currentTime = 0;
-    }
-    
-    // 更新按鈕狀態
-    document.getElementById('play-music').disabled = false;
-    document.getElementById('stop-music').disabled = true;
-}
-
-function updateVolume(value) {
-    if (audio) {
-        audio.volume = value / 100;
-        document.getElementById('volume-label').textContent = `${value}%`;
-    }
-}
-
-// 在工作/休息時間切換時自動控制音樂
-function handleStateChange(isWorkTime) {
-    const musicSelect = document.getElementById('music-select');
-    const selectedMusic = musicSelect.value;
-    
-    if (isWorkTime && selectedMusic) {
-        playMusic(selectedMusic);
-    } else {
-        stopMusic();
-    }
-}
