@@ -7,7 +7,6 @@ let currentTime = workTime;
 let todos = [];
 let currentTaskId = null;
 let isRunning = false;
-let youtubePlayer = null;
 
 document.getElementById('start-btn').addEventListener('click', startTimer);
 document.getElementById('pause-btn').addEventListener('click', pauseTimer);
@@ -160,86 +159,6 @@ function loadTodos() {
     }
 }
 
-function loadYouTubeAPI() {
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-}
-
-function onYouTubeIframeAPIReady() {
-    youtubePlayer = new YT.Player('player', {
-        height: '0',
-        width: '0',
-        playerVars: {
-            'playsinline': 1,
-            'controls': 0
-        },
-        events: {
-            'onStateChange': onPlayerStateChange
-        }
-    });
-}
-
-function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.ENDED) {
-        if (isWorking) {
-            youtubePlayer.playVideo();
-        }
-    }
-}
-
-function getYouTubeVideoId(url) {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
-}
-
-function loadYouTubeVideo(url) {
-    const videoId = getYouTubeVideoId(url);
-    if (videoId) {
-        youtubePlayer.loadVideoById(videoId);
-        youtubePlayer.pauseVideo();
-        document.getElementById('play-music').disabled = false;
-        updateVolume(document.getElementById('volume-control').value);
-    } else {
-        alert('無效的 YouTube 網址');
-    }
-}
-
-function playMusic() {
-    if (youtubePlayer && youtubePlayer.playVideo) {
-        youtubePlayer.playVideo();
-        document.getElementById('play-music').disabled = true;
-        document.getElementById('stop-music').disabled = false;
-    }
-}
-
-function stopMusic() {
-    if (youtubePlayer && youtubePlayer.pauseVideo) {
-        youtubePlayer.pauseVideo();
-        document.getElementById('play-music').disabled = false;
-        document.getElementById('stop-music').disabled = true;
-    }
-}
-
-function updateVolume(value) {
-    if (youtubePlayer && youtubePlayer.setVolume) {
-        youtubePlayer.setVolume(value);
-        document.getElementById('volume-label').textContent = `${value}%`;
-    }
-}
-
-function handleStateChange(isWorkTime) {
-    if (youtubePlayer) {
-        if (isWorkTime) {
-            playMusic();
-        } else {
-            stopMusic();
-        }
-    }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     // 載入已保存的待辦事項
     loadTodos();
@@ -265,7 +184,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-
-    // 加載 YouTube API
-    loadYouTubeAPI();
 });
