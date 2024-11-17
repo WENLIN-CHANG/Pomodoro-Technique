@@ -30,6 +30,22 @@
       </div>
       <ul id="todo-list"></ul>
     </div>
+    <div class="music-section">
+      <h3>背景音樂</h3>
+      <select id="music-select">
+        <option value="">請選擇音樂...</option>
+        <option value="rain">下雨聲</option>
+        <option value="forest">森林聲</option>
+        <option value="cafe">咖啡廳環境音</option>
+        <option value="lofi">Lo-Fi音樂</option>
+      </select>
+      <div class="music-controls">
+        <button id="play-music">播放</button>
+        <button id="stop-music">停止</button>
+        <input type="range" id="volume-control" min="0" max="100" value="50">
+        <span id="volume-label">50%</span>
+      </div>
+    </div>
   </div>
   <script src="app.js"></script> <!-- 引入外部 JavaScript 檔案 -->
 </body>
