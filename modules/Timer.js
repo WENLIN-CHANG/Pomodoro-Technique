@@ -90,6 +90,9 @@ class TimerManager {
         this.timer = setInterval(() => this.tick(), 100); // 更高頻率更新
         this.triggerStateChanged();
         this.triggerTimerStarted();
+        
+        // 無障礙通知
+        this.announceToScreenReader(this.isWorking ? '番茄工作時段開始' : '休息時段開始');
     }
 
     /**
@@ -108,6 +111,9 @@ class TimerManager {
         this.isRunning = false;
         this.triggerStateChanged();
         this.triggerTimerPaused();
+        
+        // 無障礙通知
+        this.announceToScreenReader('計時器已暫停');
     }
 
     /**
@@ -128,6 +134,9 @@ class TimerManager {
         this.updateDisplay();
         this.updateSessionDisplay();
         this.triggerStateChanged();
+        
+        // 無障礙通知
+        this.announceToScreenReader('計時器已重置');
     }
 
     /**
@@ -181,9 +190,11 @@ class TimerManager {
             this.currentTime = this.settings.getTimeInSeconds('longBreak');
             this.completedSessions = 0;
             this.notifications.showLongBreakNotification();
+            this.announceToScreenReader('番茄工作時段完成，開始長休息');
         } else {
             this.currentTime = this.settings.getTimeInSeconds('break');
             this.notifications.showWorkEndNotification();
+            this.announceToScreenReader('番茄工作時段完成，開始短休息');
         }
 
         this.isWorking = false;
@@ -210,6 +221,9 @@ class TimerManager {
         this.startTime = null;
         this.pausedTime = 0;
         this.originalDuration = 0;
+        
+        // 無障礙通知
+        this.announceToScreenReader('休息時段結束，準備開始新的番茄工作時段');
     }
 
     /**
@@ -399,6 +413,20 @@ class TimerManager {
      */
     getCompletedCycles() {
         return this.cycleCount;
+    }
+
+    /**
+     * 向螢幕閱讀器宣告訊息
+     */
+    announceToScreenReader(message) {
+        const announcementRegion = document.getElementById('sr-announcements');
+        if (announcementRegion) {
+            announcementRegion.textContent = message;
+            // 清除訊息，以便下次宣告
+            setTimeout(() => {
+                announcementRegion.textContent = '';
+            }, 1000);
+        }
     }
 
     /**

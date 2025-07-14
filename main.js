@@ -263,6 +263,142 @@ class PomodoroApp {
 
         // 設定初始化
         this.settings.initEventListeners();
+        
+        // 無障礙功能初始化
+        this.initAccessibility();
+    }
+
+    // 初始化無障礙功能
+    initAccessibility() {
+        // 設定焦點陷阱
+        this.setupFocusTrap();
+        
+        // 設定鍵盤導航
+        this.setupKeyboardNavigation();
+        
+        // 設定 ARIA 即時區域更新
+        this.setupAriaLiveRegions();
+    }
+
+    // 設定焦點陷阱
+    setupFocusTrap() {
+        // 確保模態對話框等元素的焦點管理
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                this.manageFocusOrder(e);
+            }
+        });
+    }
+
+    // 管理焦點順序
+    manageFocusOrder(event) {
+        const focusableElements = this.getFocusableElements();
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey) {
+            // Shift + Tab
+            if (document.activeElement === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+            }
+        } else {
+            // Tab
+            if (document.activeElement === lastElement) {
+                event.preventDefault();
+                firstElement.focus();
+            }
+        }
+    }
+
+    // 獲取可聚焦的元素
+    getFocusableElements() {
+        return Array.from(document.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )).filter(el => !el.disabled && el.offsetParent !== null);
+    }
+
+    // 設定鍵盤導航
+    setupKeyboardNavigation() {
+        // 增強現有的鍵盤快捷鍵
+        document.addEventListener('keydown', (event) => {
+            // 如果用戶正在輸入，不執行額外的快捷鍵
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+                return;
+            }
+            
+            const key = event.key.toLowerCase();
+            
+            switch(key) {
+                case 'f':
+                    // F 鍵 - 聚焦到待辦事項輸入框
+                    event.preventDefault();
+                    const todoInput = document.getElementById('todo_input');
+                    if (todoInput) {
+                        todoInput.focus();
+                        this.announceToScreenReader('已聚焦到待辦事項輸入框');
+                    }
+                    break;
+                    
+                case 's':
+                    // S 鍵 - 聚焦到設定區域
+                    event.preventDefault();
+                    const settingsSection = document.getElementById('work_time');
+                    if (settingsSection) {
+                        settingsSection.focus();
+                        this.announceToScreenReader('已聚焦到設定區域');
+                    }
+                    break;
+                    
+                case 't':
+                    // T 鍵 - 聚焦到計時器
+                    event.preventDefault();
+                    const timerDisplay = document.getElementById('time_display');
+                    if (timerDisplay) {
+                        timerDisplay.focus();
+                        this.announceToScreenReader('已聚焦到計時器顯示');
+                    }
+                    break;
+                    
+                case 'escape':
+                    // ESC 鍵 - 返回到主要內容
+                    event.preventDefault();
+                    const mainContent = document.getElementById('main-content');
+                    if (mainContent) {
+                        mainContent.focus();
+                        this.announceToScreenReader('已返回到主要內容');
+                    }
+                    break;
+            }
+        });
+    }
+
+    // 設定 ARIA 即時區域更新
+    setupAriaLiveRegions() {
+        // 計時器狀態更新
+        this.timerStatusRegion = document.getElementById('timer-status');
+        
+        // 創建通知區域
+        if (!document.getElementById('sr-announcements')) {
+            const announcementRegion = document.createElement('div');
+            announcementRegion.id = 'sr-announcements';
+            announcementRegion.className = 'sr_only';
+            announcementRegion.setAttribute('aria-live', 'assertive');
+            announcementRegion.setAttribute('aria-atomic', 'true');
+            document.body.appendChild(announcementRegion);
+        }
+    }
+
+    // 向螢幕閱讀器宣告訊息
+    announceToScreenReader(message) {
+        const announcementRegion = document.getElementById('sr-announcements');
+        if (announcementRegion) {
+            announcementRegion.textContent = message;
+            // 清除訊息，以便下次宣告
+            setTimeout(() => {
+                announcementRegion.textContent = '';
+            }, 1000);
+        }
     }
 
     setupKeyboardShortcuts() {
@@ -332,6 +468,9 @@ class PomodoroApp {
         this.todos.push(todo);
         this.renderTodos();
         this.saveTodos();
+        
+        // 無障礙通知
+        this.announceToScreenReader(`已新增待辦事項：${sanitizedText}`);
     }
 
     // 輸入清理函數
@@ -351,9 +490,14 @@ class PomodoroApp {
     }
 
     deleteTodo(id) {
+        const todo = this.todos.find(todo => todo.id === id);
+        const todoText = todo ? todo.text : '';
         this.todos = this.todos.filter(todo => todo.id !== id);
         this.renderTodos();
         this.saveTodos();
+        
+        // 無障礙通知
+        this.announceToScreenReader(`已刪除待辦事項：${todoText}`);
     }
 
     completeTodo(id) {
@@ -362,6 +506,10 @@ class PomodoroApp {
             todo.completed = !todo.completed;
             this.renderTodos();
             this.saveTodos();
+            
+            // 無障礙通知
+            const statusText = todo.completed ? '已完成' : '標記為未完成';
+            this.announceToScreenReader(`${statusText}待辦事項：${todo.text}`);
         }
     }
 

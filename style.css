@@ -7,6 +7,66 @@ body {
   color: #333;
 }
 
+/* 無障礙樣式 */
+.sr_only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 跳轉連結樣式 - 增強對比度 */
+.skip_link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 12px 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+  font-size: 16px;
+  font-weight: bold;
+  transition: top 0.2s ease;
+  border: 2px solid #fff;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.skip_link:focus {
+  top: 6px;
+  background: #1976d2;
+  outline: 3px solid #FFD700;
+  outline-offset: 2px;
+}
+
+/* 焦點指示器 - 增強對比度 */
+*:focus {
+  outline: 3px solid #2E7D32;
+  outline-offset: 2px;
+}
+
+/* 按鈕焦點樣式 - 增強對比度 */
+button:focus {
+  outline: 3px solid #2E7D32;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.5);
+}
+
+/* 輸入框焦點樣式 - 增強對比度 */
+input:focus {
+  outline: 3px solid #2E7D32;
+  outline-offset: 2px;
+  border-color: #2E7D32;
+  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.5);
+}
+
 /* 新的分欄布局容器 */
 .app_container {
   display: flex;
@@ -186,7 +246,7 @@ body {
   margin: 20px 0;
   display: flex;
   justify-content: center;
-  gap: 0;
+  gap: 8px;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -194,14 +254,15 @@ body {
 .controls button {
   margin: 0;
   padding: 12px 18px;
-  font-size: 15px;
-  border-radius: 0;
+  font-size: 16px;
+  border-radius: 4px;
   box-shadow: none;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   flex: 1;
-  max-width: 100px;
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  min-width: 100px;
+  min-height: 48px;
+  border-left: none;
 }
 
 .controls button:first-child {
@@ -218,32 +279,35 @@ body {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
-/* 按鈕狀態顏色 */
+/* 按鈕狀態顏色 - 增強對比度 */
 #start_btn {
-  background: linear-gradient(135deg, #48bb78, #38a169);
+  background: linear-gradient(135deg, #2E7D32, #1B5E20);
   color: white;
+  font-weight: 600;
 }
 
 #start_btn:hover {
-  background: linear-gradient(135deg, #38a169, #2f855a);
+  background: linear-gradient(135deg, #1B5E20, #0D4916);
 }
 
 #pause_btn {
-  background: linear-gradient(135deg, #ed8936, #dd6b20);
+  background: linear-gradient(135deg, #E65100, #BF360C);
   color: white;
+  font-weight: 600;
 }
 
 #pause_btn:hover {
-  background: linear-gradient(135deg, #dd6b20, #c05621);
+  background: linear-gradient(135deg, #BF360C, #8F3800);
 }
 
 #reset_btn {
-  background: linear-gradient(135deg, #e53e3e, #c53030);
+  background: linear-gradient(135deg, #C62828, #B71C1C);
   color: white;
+  font-weight: 600;
 }
 
 #reset_btn:hover {
-  background: linear-gradient(135deg, #c53030, #9c2a2a);
+  background: linear-gradient(135deg, #B71C1C, #7F0000);
 }
 
 /* Level 2: 當前狀態資訊 */
@@ -359,7 +423,7 @@ body {
   transform: translateY(-1px);
 }
 
-/* 統一的基本按鈕樣式 */
+/* 統一的基本按鈕樣式 - 確保最小觸控目標大小 */
 button {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -367,6 +431,10 @@ button {
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 12px 16px;
+  font-size: 16px;
 }
 
 /* 按鈕按下時的統一效果 */

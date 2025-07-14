@@ -6,7 +6,9 @@
       "Bash(git commit:*)",
       "Bash(grep:*)",
       "Bash(sed:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(python3:*)",
+      "Bash(open index.html)"
     ],
     "deny": []
   }

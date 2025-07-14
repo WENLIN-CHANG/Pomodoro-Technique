@@ -12,33 +12,38 @@
 </head>
 
 <body>
-  <div class="app_container">
+  <!-- 跳轉連結 -->
+  <a href="#main-content" class="skip_link">跳轉到主要內容</a>
+  <a href="#timer-controls" class="skip_link">跳轉到計時器控制</a>
+  <a href="#todo-section" class="skip_link">跳轉到待辦事項</a>
+  <div class="app_container" role="main" id="main-content">
     <!-- 左欄：計時器主要功能 -->
-    <div class="timer_column">
-      <div class="timer_section">
-        <h1 class="app_title">番茄鐘</h1>
+    <div class="timer_column" role="region" aria-labelledby="timer-heading">
+      <div class="timer_section" role="timer" aria-live="polite" aria-atomic="true">
+        <h1 class="app_title" id="timer-heading">番茄鐘</h1>
         <div class="timer">
-          <span id="time_display">25:00</span>
+          <span id="time_display" aria-label="剩餘時間 25 分鐘 0 秒" role="timer" aria-live="polite">25:00</span>
           <div class="sessions_info">
-            <span id="sessions_count">距離長休息還有 4 個工作時段</span>
+            <span id="sessions_count" aria-live="polite" aria-atomic="true">距離長休息還有 4 個工作時段</span>
           </div>
         </div>
-        <div class="controls">
-          <button id="start_btn">開始</button>
-          <button id="pause_btn">暫停</button>
-          <button id="reset_btn">重設</button>
+        <div class="controls" role="group" aria-label="計時器控制" id="timer-controls">
+          <button id="start_btn" aria-label="開始番茄工作時段" aria-describedby="timer-status">開始</button>
+          <button id="pause_btn" aria-label="暫停計時器" aria-describedby="timer-status">暫停</button>
+          <button id="reset_btn" aria-label="重設計時器到初始狀態" aria-describedby="timer-status">重設</button>
         </div>
         <div class="cycles">
-          <p>完成週期: <span id="cycle_count">0</span></p>
+          <p>完成週期: <span id="cycle_count" aria-label="已完成 0 個番茄工作週期" aria-live="polite">0</span></p>
+          <div id="timer-status" class="sr_only" aria-live="assertive" aria-atomic="true">計時器已停止</div>
         </div>
       </div>
     </div>
 
     <!-- 右欄：功能區域 -->
-    <div class="features_column">
-      <div class="keyboard_shortcuts">
-        <h3>快捷鍵</h3>
-        <div class="shortcuts_grid">
+    <div class="features_column" role="complementary" aria-label="功能區域">
+      <div class="keyboard_shortcuts" role="region" aria-labelledby="shortcuts-heading">
+        <h3 id="shortcuts-heading">快捷鍵</h3>
+        <div class="shortcuts_grid" role="list" aria-label="快捷鍵列表">
           <div class="shortcut_item">
             <kbd>空格</kbd> 開始/暫停
           </div>
@@ -54,60 +59,67 @@
         </div>
       </div>
 
-      <div class="settings_section">
-        <h2>時間設定</h2>
-        <div class="settings_grid">
+      <div class="settings_section" role="region" aria-labelledby="settings-heading">
+        <h2 id="settings-heading">時間設定</h2>
+        <div class="settings_grid" role="group" aria-labelledby="settings-heading">
           <div class="setting_item">
             <label for="work-time">工作時間 (分鐘)</label>
-            <input type="number" id="work_time" min="1" max="60" value="25">
+            <input type="number" id="work_time" min="1" max="60" value="25" aria-describedby="work-time-desc">
           </div>
           <div class="setting_item">
             <label for="break-time">短休息 (分鐘)</label>
-            <input type="number" id="break_time" min="1" max="30" value="5">
+            <input type="number" id="break_time" min="1" max="30" value="5" aria-describedby="break-time-desc">
           </div>
           <div class="setting_item">
             <label for="long-break-time">長休息 (分鐘)</label>
-            <input type="number" id="long_break_time" min="1" max="60" value="15">
+            <input type="number" id="long_break_time" min="1" max="60" value="15" aria-describedby="long-break-time-desc">
           </div>
           <div class="setting_item">
             <label for="sessions-before-long-break">長休息前工作時段</label>
-            <input type="number" id="sessions_before_long_break" min="2" max="10" value="4">
+            <input type="number" id="sessions_before_long_break" min="2" max="10" value="4" aria-describedby="sessions-desc">
           </div>
         </div>
-        <button id="save_settings">保存設定</button>
-        <button id="reset_settings">重置為預設值</button>
+        <!-- 輔助說明 -->
+        <div class="sr_only">
+          <div id="work-time-desc">設定每個番茄工作時段的時間，範圍 1-60 分鐘</div>
+          <div id="break-time-desc">設定短休息時間，範圍 1-30 分鐘</div>
+          <div id="long-break-time-desc">設定長休息時間，範圍 1-60 分鐘</div>
+          <div id="sessions-desc">設定幾個工作時段後進入長休息，範圍 2-10 個</div>
+        </div>
+        <button id="save_settings" aria-label="保存時間設定">保存設定</button>
+        <button id="reset_settings" aria-label="重置時間設定為預設值">重置為預設值</button>
       </div>
 
-      <div class="todo_section">
-        <h2>待辦事項</h2>
-        <div class="todo_input">
-          <input type="text" id="todo_input" placeholder="輸入待辦事項...">
-          <button id="add_todo">新增</button>
+      <div class="todo_section" role="region" aria-labelledby="todo-heading" id="todo-section">
+        <h2 id="todo-heading">待辦事項</h2>
+        <div class="todo_input" role="search" aria-label="新增待辦事項">
+          <input type="text" id="todo_input" placeholder="輸入待辦事項..." aria-label="輸入新的待辦事項內容">
+          <button id="add_todo" aria-label="新增待辦事項">新增</button>
         </div>
-        <ul id="todo_list"></ul>
+        <ul id="todo_list" role="list" aria-label="待辦事項列表" aria-live="polite"></ul>
       </div>
 
-      <div class="stats_section">
-        <h2>統計分析</h2>
-        <div class="stats_controls">
-          <button id="daily_stats">每日統計</button>
-          <button id="weekly_stats">每週統計</button>
+      <div class="stats_section" role="region" aria-labelledby="stats-heading">
+        <h2 id="stats-heading">統計分析</h2>
+        <div class="stats_controls" role="group" aria-label="統計圖表控制">
+          <button id="daily_stats" aria-label="顯示每日統計圖表">每日統計</button>
+          <button id="weekly_stats" aria-label="顯示每週統計圖表">每週統計</button>
         </div>
-        <div class="stats_display">
-          <canvas id="statsChart"></canvas>
+        <div class="stats_display" role="img" aria-label="生產力統計圖表">
+          <canvas id="statsChart" aria-label="生產力統計圖表" role="img"></canvas>
         </div>
-        <div class="stats_summary">
+        <div class="stats_summary" role="group" aria-label="統計摘要">
           <div class="stat_item">
-            <h3>今日完成週期</h3>
-            <span id="today_cycles">0</span>
+            <h3 id="today-heading">今日完成週期</h3>
+            <span id="today_cycles" aria-labelledby="today-heading" aria-live="polite">0</span>
           </div>
           <div class="stat_item">
-            <h3>本週完成週期</h3>
-            <span id="week_cycles">0</span>
+            <h3 id="week-heading">本週完成週期</h3>
+            <span id="week_cycles" aria-labelledby="week-heading" aria-live="polite">0</span>
           </div>
           <div class="stat_item">
-            <h3>最長專注時間</h3>
-            <span id="max_focus_time">0 分鐘</span>
+            <h3 id="focus-heading">最長專注時間</h3>
+            <span id="max_focus_time" aria-labelledby="focus-heading" aria-live="polite">0 分鐘</span>
           </div>
         </div>
       </div>
