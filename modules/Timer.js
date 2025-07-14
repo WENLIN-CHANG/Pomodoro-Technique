@@ -89,6 +89,7 @@ class TimerManager {
 
         this.timer = setInterval(() => this.tick(), 100); // 更高頻率更新
         this.triggerStateChanged();
+        this.triggerTimerStarted();
     }
 
     /**
@@ -106,6 +107,7 @@ class TimerManager {
         
         this.isRunning = false;
         this.triggerStateChanged();
+        this.triggerTimerPaused();
     }
 
     /**
@@ -188,6 +190,11 @@ class TimerManager {
         this.updateDisplay();
         this.updateCycleCount();
         this.updateSessionDisplay();
+        
+        // 重置高精度計時器變數，為下一階段做準備
+        this.startTime = null;
+        this.pausedTime = 0;
+        this.originalDuration = 0;
     }
 
     /**
@@ -198,6 +205,11 @@ class TimerManager {
         this.currentTime = this.settings.getTimeInSeconds('work');
         this.notifications.showBreakEndNotification();
         this.updateDisplay();
+        
+        // 重置高精度計時器變數，為下一階段做準備
+        this.startTime = null;
+        this.pausedTime = 0;
+        this.originalDuration = 0;
     }
 
     /**
@@ -301,6 +313,32 @@ class TimerManager {
     triggerTaskStarted(taskId) {
         const event = new CustomEvent('taskStarted', {
             detail: { taskId }
+        });
+        document.dispatchEvent(event);
+    }
+
+    /**
+     * 觸發計時器開始事件
+     */
+    triggerTimerStarted() {
+        const event = new CustomEvent('timerStarted', {
+            detail: { 
+                isWorking: this.isWorking,
+                currentTime: this.currentTime
+            }
+        });
+        document.dispatchEvent(event);
+    }
+
+    /**
+     * 觸發計時器暫停事件
+     */
+    triggerTimerPaused() {
+        const event = new CustomEvent('timerPaused', {
+            detail: { 
+                isWorking: this.isWorking,
+                currentTime: this.currentTime
+            }
         });
         document.dispatchEvent(event);
     }

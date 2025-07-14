@@ -241,6 +241,24 @@ class PomodoroApp {
             this.updateCurrentTask();
         });
 
+        // 監聽計時器開始事件，記錄專注開始時間
+        document.addEventListener('timerStarted', (e) => {
+            if (e.detail.isWorking) {
+                this.pomodoroStats.currentFocusStart = Date.now();
+            }
+        });
+
+        // 監聽計時器暫停事件，更新最長專注時間
+        document.addEventListener('timerPaused', (e) => {
+            if (e.detail.isWorking && this.pomodoroStats.currentFocusStart) {
+                const currentFocusTime = Math.floor((Date.now() - this.pomodoroStats.currentFocusStart) / 1000 / 60);
+                this.pomodoroStats.maxFocusTime = Math.max(this.pomodoroStats.maxFocusTime, currentFocusTime);
+                this.pomodoroStats.currentFocusStart = null;
+                this.saveStats();
+                this.updateStatsDisplay();
+            }
+        });
+
         // Timer state is now managed by the Timer class
 
         // 設定初始化
