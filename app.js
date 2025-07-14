@@ -346,4 +346,53 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     updateSessionDisplay(); // 初始化工作時段顯示
+    
+    // 添加鍵盤快捷鍵支持
+    setupKeyboardShortcuts();
 });
+
+// 鍵盤快捷鍵功能
+function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', function(event) {
+        // 如果用戶正在輸入框中輸入，則不執行快捷鍵
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+            return;
+        }
+        
+        // 防止瀏覽器默認行為
+        const key = event.key.toLowerCase();
+        
+        switch(key) {
+            case ' ': // 空格鍵 - 開始/暫停
+                event.preventDefault();
+                if (isRunning) {
+                    pauseTimer();
+                } else {
+                    startTimer();
+                }
+                break;
+                
+            case 'r': // R鍵 - 重置
+                event.preventDefault();
+                resetTimer();
+                break;
+                
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                // 數字鍵 - 快速開始對應的待辦事項
+                event.preventDefault();
+                const index = parseInt(key) - 1;
+                if (todos[index] && !todos[index].completed) {
+                    startTask(todos[index].id);
+                }
+                break;
+        }
+    });
+}

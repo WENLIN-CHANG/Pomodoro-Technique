@@ -276,6 +276,50 @@ button:disabled {
     font-size: 0.5em;
 }
 
+/* 快捷鍵提示樣式 */
+.keyboard-shortcuts {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.keyboard-shortcuts h3 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: #495057;
+    text-align: center;
+}
+
+.shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+kbd {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid #ced4da;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    min-width: 24px;
+    text-align: center;
+}
+
 /* 響應式設計 - 平板和大手機 */
 @media screen and (max-width: 768px) {
     .container {
@@ -299,6 +343,16 @@ button:disabled {
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .keyboard-shortcuts {
+        margin: 15px 0;
+        padding: 12px;
+    }
+    
+    .shortcuts-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
 }
 
@@ -361,6 +415,24 @@ button:disabled {
         font-size: 0.8em;
         padding: 8px 12px;
     }
+    
+    .keyboard-shortcuts {
+        margin: 10px 0;
+        padding: 10px;
+    }
+    
+    .keyboard-shortcuts h3 {
+        font-size: 14px;
+    }
+    
+    .shortcut-item {
+        font-size: 12px;
+    }
+    
+    kbd {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
 }
 
 /* 響應式設計 - 小手機 */
@@ -399,5 +471,25 @@ button:disabled {
         margin: 0 2px;
         min-height: 44px;
         font-size: 12px;
+    }
+    
+    .keyboard-shortcuts {
+        margin: 8px 0;
+        padding: 8px;
+    }
+    
+    .keyboard-shortcuts h3 {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+    
+    .shortcut-item {
+        font-size: 11px;
+    }
+    
+    kbd {
+        font-size: 9px;
+        padding: 2px 4px;
+        min-width: 20px;
     }
 }
