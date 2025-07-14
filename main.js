@@ -3,31 +3,7 @@
  * 使用模組化架構組合各個功能
  */
 
-// 全域變數 (保持向後兼容)
-let timer;
-let isWorking = true;
-let cycleCount = 0;
-let workTime = 25 * 60;
-let breakTime = 5 * 60;
-let currentTime = workTime;
-let todos = [];
-let currentTaskId = null;
-let isRunning = false;
-let pomodoroStats = {
-    daily: {},
-    weekly: {},
-    maxFocusTime: 0,
-    currentFocusStart: null
-};
-let longBreakTime = 15 * 60;
-let sessionsBeforeLongBreak = 4;
-let completedSessions = 0;
-let timeSettings = {
-    workTime: 25,
-    breakTime: 5,
-    longBreakTime: 15,
-    sessionsBeforeLongBreak: 4
-};
+// 應用級別的狀態管理現在由 PomodoroApp 類別處理
 
 // 應用管理器
 class PomodoroApp {
@@ -38,40 +14,156 @@ class PomodoroApp {
         this.settings = new window.SettingsManager(this.storage, this.notifications);
         this.timer = new window.TimerManager(this.settings, this.notifications);
         
+        // 應用狀態
+        this.todos = [];
+        this.currentTaskId = null;
+        this.pomodoroStats = {
+            daily: {},
+            weekly: {},
+            maxFocusTime: 0,
+            currentFocusStart: null
+        };
+        
         // 圖表實例
         this.currentChart = null;
+        
+        // 錯誤處理系統
+        this.setupErrorHandling();
         
         // 初始化應用
         this.init();
     }
 
+    setupErrorHandling() {
+        // 全域錯誤處理器
+        window.addEventListener('error', (event) => {
+            this.handleError(event.error, '應用程式發生未預期的錯誤');
+        });
+        
+        window.addEventListener('unhandledrejection', (event) => {
+            this.handleError(event.reason, '非同步操作失敗');
+        });
+    }
+
+    handleError(error, userMessage = '操作失敗') {
+        console.error('Error:', error);
+        
+        // 顯示用戶友好的錯誤訊息
+        this.showErrorMessage(userMessage);
+        
+        // 可以在這裡添加錯誤報告功能
+        // this.reportError(error, userMessage);
+    }
+
+    showErrorMessage(message) {
+        // 創建或更新錯誤顯示元素
+        let errorDiv = document.getElementById('error-message');
+        if (!errorDiv) {
+            errorDiv = document.createElement('div');
+            errorDiv.id = 'error-message';
+            errorDiv.className = 'error-message';
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ff4444;
+                color: white;
+                padding: 12px;
+                border-radius: 4px;
+                z-index: 1000;
+                max-width: 300px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            `;
+            document.body.appendChild(errorDiv);
+        }
+        
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+        
+        // 自動隱藏錯誤訊息
+        setTimeout(() => {
+            errorDiv.style.display = 'none';
+        }, 5000);
+    }
+
+    showSuccessMessage(message) {
+        // 創建或更新成功顯示元素
+        let successDiv = document.getElementById('success-message');
+        if (!successDiv) {
+            successDiv = document.createElement('div');
+            successDiv.id = 'success-message';
+            successDiv.className = 'success-message';
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #44aa44;
+                color: white;
+                padding: 12px;
+                border-radius: 4px;
+                z-index: 1000;
+                max-width: 300px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            `;
+            document.body.appendChild(successDiv);
+        }
+        
+        successDiv.textContent = message;
+        successDiv.style.display = 'block';
+        
+        // 自動隱藏成功訊息
+        setTimeout(() => {
+            successDiv.style.display = 'none';
+        }, 3000);
+    }
+
     async init() {
-        // 請求通知權限
-        await this.notifications.requestPermission();
-        
-        // 載入保存的數據
-        this.loadData();
-        
-        // 設置事件監聽器
-        this.setupEventListeners();
-        
-        // 初始化快捷鍵
-        this.setupKeyboardShortcuts();
-        
-        // 更新顯示
-        this.updateDisplays();
+        try {
+            // 請求通知權限
+            await this.notifications.requestPermission();
+            
+            // 載入保存的數據
+            this.loadData();
+            
+            // 設置事件監聽器
+            this.setupEventListeners();
+            
+            // 初始化快捷鍵
+            this.setupKeyboardShortcuts();
+            
+            // 更新顯示
+            this.updateDisplays();
+            
+            this.showSuccessMessage('應用程式初始化成功');
+        } catch (error) {
+            this.handleError(error, '應用程式初始化失敗');
+        }
     }
 
     loadData() {
-        // 載入待辦事項
-        todos = this.storage.loadTodos();
-        this.renderTodos();
-        
-        // 載入統計數據
-        pomodoroStats = this.storage.loadStats();
-        this.updateStatsDisplay();
-        
-        // 設定管理器會自動載入時間設定
+        try {
+            // 載入待辦事項
+            this.todos = this.storage.loadTodos();
+            this.renderTodos();
+            
+            // 載入統計數據
+            this.pomodoroStats = this.storage.loadStats();
+            this.updateStatsDisplay();
+            
+            // 設定管理器會自動載入時間設定
+        } catch (error) {
+            this.handleError(error, '載入數據失敗，將使用預設設定');
+            // 使用預設數據
+            this.todos = [];
+            this.pomodoroStats = {
+                daily: {},
+                weekly: {},
+                maxFocusTime: 0,
+                currentFocusStart: null
+            };
+            this.renderTodos();
+            this.updateStatsDisplay();
+        }
     }
 
     setupEventListeners() {
@@ -111,7 +203,7 @@ class PomodoroApp {
 
         document.addEventListener('taskPomodoroCompleted', (e) => {
             const taskId = e.detail.taskId;
-            const task = todos.find(todo => todo.id === taskId);
+            const task = this.todos.find(todo => todo.id === taskId);
             if (task) {
                 task.pomodoros++;
                 this.saveTodos();
@@ -120,18 +212,11 @@ class PomodoroApp {
         });
 
         document.addEventListener('taskStarted', (e) => {
-            currentTaskId = e.detail.taskId;
+            this.currentTaskId = e.detail.taskId;
             this.updateCurrentTask();
         });
 
-        document.addEventListener('timerStateChanged', (e) => {
-            const state = e.detail;
-            isRunning = state.isRunning;
-            isWorking = state.isWorking;
-            currentTime = state.currentTime;
-            cycleCount = state.cycleCount;
-            completedSessions = state.completedSessions;
-        });
+        // Timer state is now managed by the Timer class
 
         // 設定初始化
         this.settings.initEventListeners();
@@ -173,8 +258,8 @@ class PomodoroApp {
                     // 數字鍵 - 快速開始對應的待辦事項
                     event.preventDefault();
                     const index = parseInt(key) - 1;
-                    if (todos[index] && !todos[index].completed) {
-                        this.startTask(todos[index].id);
+                    if (this.todos[index] && !this.todos[index].completed) {
+                        this.startTask(this.todos[index].id);
                     }
                     break;
             }
@@ -189,19 +274,19 @@ class PomodoroApp {
             completed: false,
             pomodoros: 0
         };
-        todos.push(todo);
+        this.todos.push(todo);
         this.renderTodos();
         this.saveTodos();
     }
 
     deleteTodo(id) {
-        todos = todos.filter(todo => todo.id !== id);
+        this.todos = this.todos.filter(todo => todo.id !== id);
         this.renderTodos();
         this.saveTodos();
     }
 
     completeTodo(id) {
-        const todo = todos.find(todo => todo.id === id);
+        const todo = this.todos.find(todo => todo.id === id);
         if (todo) {
             todo.completed = !todo.completed;
             this.renderTodos();
@@ -219,8 +304,8 @@ class PomodoroApp {
             taskElement.classList.remove('current-task');
         }
         
-        if (currentTaskId) {
-            const newTaskElement = document.querySelector(`[data-id="${currentTaskId}"]`);
+        if (this.currentTaskId) {
+            const newTaskElement = document.querySelector(`[data-id="${this.currentTaskId}"]`);
             if (newTaskElement) {
                 newTaskElement.classList.add('current-task');
             }
@@ -233,7 +318,7 @@ class PomodoroApp {
         
         todoList.innerHTML = '';
 
-        todos.forEach(todo => {
+        this.todos.forEach(todo => {
             const li = document.createElement('li');
             li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
             li.setAttribute('data-id', todo.id);
@@ -241,11 +326,20 @@ class PomodoroApp {
             li.innerHTML = `
                 <span>${todo.text} (完成番茄數: ${todo.pomodoros})</span>
                 <div class="todo-controls">
-                    <button class="start-task" onclick="app.startTask(${todo.id})">開始</button>
-                    <button class="complete-task" onclick="app.completeTodo(${todo.id})">${todo.completed ? '取消完成' : '完成'}</button>
-                    <button class="delete-task" onclick="app.deleteTodo(${todo.id})">刪除</button>
+                    <button class="start-task" data-id="${todo.id}">開始</button>
+                    <button class="complete-task" data-id="${todo.id}">${todo.completed ? '取消完成' : '完成'}</button>
+                    <button class="delete-task" data-id="${todo.id}">刪除</button>
                 </div>
             `;
+            
+            // 添加事件監聽器
+            const startBtn = li.querySelector('.start-task');
+            const completeBtn = li.querySelector('.complete-task');
+            const deleteBtn = li.querySelector('.delete-task');
+            
+            startBtn.addEventListener('click', () => this.startTask(todo.id));
+            completeBtn.addEventListener('click', () => this.completeTodo(todo.id));
+            deleteBtn.addEventListener('click', () => this.deleteTodo(todo.id));
             
             todoList.appendChild(li);
         });
@@ -253,7 +347,11 @@ class PomodoroApp {
     }
 
     saveTodos() {
-        this.storage.saveTodos(todos);
+        try {
+            this.storage.saveTodos(this.todos);
+        } catch (error) {
+            this.handleError(error, '儲存待辦事項失敗');
+        }
     }
 
     // 統計功能
@@ -262,15 +360,15 @@ class PomodoroApp {
         const weekNumber = this.getWeekNumber(new Date());
         
         // 更新每日統計
-        pomodoroStats.daily[today] = (pomodoroStats.daily[today] || 0) + 1;
+        this.pomodoroStats.daily[today] = (this.pomodoroStats.daily[today] || 0) + 1;
         
         // 更新每週統計
-        pomodoroStats.weekly[weekNumber] = (pomodoroStats.weekly[weekNumber] || 0) + 1;
+        this.pomodoroStats.weekly[weekNumber] = (this.pomodoroStats.weekly[weekNumber] || 0) + 1;
         
         // 更新最長專注時間
-        if (pomodoroStats.currentFocusStart) {
-            const currentFocusTime = Math.floor((Date.now() - pomodoroStats.currentFocusStart) / 1000 / 60);
-            pomodoroStats.maxFocusTime = Math.max(pomodoroStats.maxFocusTime, currentFocusTime);
+        if (this.pomodoroStats.currentFocusStart) {
+            const currentFocusTime = Math.floor((Date.now() - this.pomodoroStats.currentFocusStart) / 1000 / 60);
+            this.pomodoroStats.maxFocusTime = Math.max(this.pomodoroStats.maxFocusTime, currentFocusTime);
         }
         
         this.saveStats();
@@ -290,19 +388,19 @@ class PomodoroApp {
         // 更新今日完成週期
         const todayCycles = document.getElementById('today-cycles');
         if (todayCycles) {
-            todayCycles.textContent = pomodoroStats.daily[today] || 0;
+            todayCycles.textContent = this.pomodoroStats.daily[today] || 0;
         }
         
         // 更新本週完成週期
         const weekCycles = document.getElementById('week-cycles');
         if (weekCycles) {
-            weekCycles.textContent = pomodoroStats.weekly[weekNumber] || 0;
+            weekCycles.textContent = this.pomodoroStats.weekly[weekNumber] || 0;
         }
         
         // 更新最長專注時間
         const maxFocusTime = document.getElementById('max-focus-time');
         if (maxFocusTime) {
-            maxFocusTime.textContent = `${pomodoroStats.maxFocusTime} 分鐘`;
+            maxFocusTime.textContent = `${this.pomodoroStats.maxFocusTime} 分鐘`;
         }
         
         // 更新圖表
@@ -310,16 +408,17 @@ class PomodoroApp {
     }
 
     updateChart(type = 'daily') {
-        const canvas = document.getElementById('statsChart');
-        if (!canvas || typeof Chart === 'undefined') return;
-        
-        // 銷毀現有圖表
-        if (this.currentChart) {
-            this.currentChart.destroy();
-        }
-        
-        const ctx = canvas.getContext('2d');
-        const data = type === 'daily' ? pomodoroStats.daily : pomodoroStats.weekly;
+        try {
+            const canvas = document.getElementById('statsChart');
+            if (!canvas || typeof Chart === 'undefined') return;
+            
+            // 銷毀現有圖表
+            if (this.currentChart) {
+                this.currentChart.destroy();
+            }
+            
+            const ctx = canvas.getContext('2d');
+            const data = type === 'daily' ? this.pomodoroStats.daily : this.pomodoroStats.weekly;
         
         // 處理標籤格式
         let labels = Object.keys(data).slice(-7);
@@ -364,10 +463,17 @@ class PomodoroApp {
                 }
             }
         });
+        } catch (error) {
+            this.handleError(error, '更新圖表失敗');
+        }
     }
 
     saveStats() {
-        this.storage.saveStats(pomodoroStats);
+        try {
+            this.storage.saveStats(this.pomodoroStats);
+        } catch (error) {
+            this.handleError(error, '儲存統計數據失敗');
+        }
     }
 
     updateDisplays() {
@@ -375,42 +481,7 @@ class PomodoroApp {
     }
 }
 
-// 向後兼容的函數
-function startTimer() {
-    if (window.app) {
-        window.app.timer.start();
-    }
-}
-
-function pauseTimer() {
-    if (window.app) {
-        window.app.timer.pause();
-    }
-}
-
-function resetTimer() {
-    if (window.app) {
-        window.app.timer.reset();
-    }
-}
-
-function startTask(id) {
-    if (window.app) {
-        window.app.startTask(id);
-    }
-}
-
-function deleteTodo(id) {
-    if (window.app) {
-        window.app.deleteTodo(id);
-    }
-}
-
-function completeTodo(id) {
-    if (window.app) {
-        window.app.completeTodo(id);
-    }
-}
+// 向後兼容的函數已移除 - 現在使用統一的事件監聽器架構
 
 // 初始化應用
 document.addEventListener('DOMContentLoaded', function() {

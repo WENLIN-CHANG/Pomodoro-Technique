@@ -195,11 +195,7 @@ body {
   margin: 0;
   padding: 12px 18px;
   font-size: 15px;
-  font-weight: 600;
-  border: none;
   border-radius: 0;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: none;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -300,9 +296,6 @@ body {
   padding: 8px 15px;
   background-color: #4CAF50;
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 #todo-list {
@@ -333,17 +326,12 @@ body {
 
 .todo-controls button {
   padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 /* 待辦事項按鈕優化 */
 .start-task {
   background: linear-gradient(135deg, #3182ce, #2c5282);
   color: white;
-  font-weight: 600;
-  transition: all 0.3s ease;
 }
 
 .start-task:hover {
@@ -354,8 +342,6 @@ body {
 .complete-task {
   background: linear-gradient(135deg, #48bb78, #38a169);
   color: white;
-  font-weight: 600;
-  transition: all 0.3s ease;
 }
 
 .complete-task:hover {
@@ -366,8 +352,6 @@ body {
 .delete-task {
   background: linear-gradient(135deg, #e53e3e, #c53030);
   color: white;
-  font-weight: 600;
-  transition: all 0.3s ease;
 }
 
 .delete-task:hover {
@@ -375,72 +359,29 @@ body {
   transform: translateY(-1px);
 }
 
-/* 修改基本按鈕樣式 */
+/* 統一的基本按鈕樣式 */
 button {
-  transition: all 0.1s ease;
-  /* 添加過渡效果 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  top: 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-/* 按鈕按下時的效果 */
+/* 按鈕按下時的統一效果 */
 button:active {
-  top: 2px;
-  /* 按鈕往下移動 */
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  /* 減少陰影 */
-  transform: scale(0.95);
-  /* 稍微縮小按鈕 */
+  transform: translateY(0px) scale(0.95);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
-/* 控制區域按鈕的樣式 */
-.controls button {
-  margin: 0 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-  /* 添加陰影 */
-}
+/* 控制區域按鈕樣式已合併到上方的 .controls button 定義中 */
 
-/* 待辦事項按鈕樣式 */
-.todo-controls button {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* 添加陰影 */
-}
+/* 待辦事項按鈕樣式已合併到上方的 .todo-controls button 定義中 */
 
-/* 新增待辦事項按鈕 */
-.todo-input button {
-  padding: 8px 15px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* 添加陰影 */
-}
+/* 新增待辦事項按鈕樣式已合併到上方的 .todo-input button 定義中 */
 
-/* 不同類型按鈕的懸停效果 */
-.start-task:hover {
-  background-color: #1976D2;
-}
-
-.complete-task:hover {
-  background-color: #388E3C;
-}
-
-.delete-task:hover {
-  background-color: #D32F2F;
-}
+/* 懸停效果已合併到上方的各按鈕定義中 */
 
 /* 按鈕禁用狀態 */
 button:disabled {
@@ -448,31 +389,9 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* 可以為不同功能的按鈕設置不同的基色 */
-#start-btn {
-  background-color: #2196F3;
-}
+/* 控制按鈕顏色已合併到上方的各按鈕定義中 */
 
-#pause-btn {
-  background-color: #FF9800;
-}
-
-#reset-btn {
-  background-color: #f44336;
-}
-
-/* 懸停效果 */
-#start-btn:hover {
-  background-color: #1976D2;
-}
-
-#pause-btn:hover {
-  background-color: #F57C00;
-}
-
-#reset-btn:hover {
-  background-color: #D32F2F;
-}
+/* 懸停效果已合併到上方的各按鈕定義中 */
 
 /* Level 4: 次要功能區塊 */
 .stats-section {
