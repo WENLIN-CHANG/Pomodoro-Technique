@@ -17,6 +17,36 @@ const longBreakTime = 15 * 60; // 15分鐘的長休息
 const sessionsBeforeLongBreak = 4; // 4個工作時段後進行長休息
 let completedSessions = 0; // 追蹤完成的工作時段數
 
+// 通知功能
+async function requestNotificationPermission() {
+    if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        return permission === 'granted';
+    }
+    return false;
+}
+
+function showNotification(title, body, icon = null) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+        const notification = new Notification(title, {
+            body: body,
+            icon: icon || '/favicon.ico',
+            badge: '/favicon.ico'
+        });
+        
+        // 自動關閉通知
+        setTimeout(() => {
+            notification.close();
+        }, 5000);
+        
+        return notification;
+    } else {
+        // 降級到 alert
+        alert(`${title}\n${body}`);
+        return null;
+    }
+}
+
 document.getElementById('start-btn').addEventListener('click', startTimer);
 document.getElementById('pause-btn').addEventListener('click', pauseTimer);
 document.getElementById('reset-btn').addEventListener('click', resetTimer);
@@ -69,10 +99,10 @@ function updateTimer() {
             if (completedSessions >= sessionsBeforeLongBreak) {
                 currentTime = longBreakTime;
                 completedSessions = 0; // 重置計數
-                alert('恭喜完成 4 個工作時段！現在進入 15 分鐘的長休息。');
+                showNotification('🎉 恭喜完成 4 個工作時段！', '現在進入 15 分鐘的長休息時間，好好放鬆一下吧！');
             } else {
                 currentTime = breakTime;
-                alert('休息時間到了!');
+                showNotification('⏰ 工作時段結束', '休息時間到了！離開螢幕，放鬆一下眼睛吧。');
             }
             
             isWorking = false;
@@ -84,7 +114,7 @@ function updateTimer() {
             // 休息時段結束
             isWorking = true;
             currentTime = workTime;
-            alert('工作時間到了!');
+            showNotification('💪 休息結束', '是時候開始新的工作時段了！保持專注，你可以做到的！');
         }
     }
 }
@@ -275,7 +305,10 @@ function updateSessionDisplay() {
     document.getElementById('sessions-count').textContent = `距離長休息還有 ${remainingSessions} 個工作時段`;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // 請求通知權限
+    await requestNotificationPermission();
+    
     // 載入已保存的待辦事項
     loadTodos();
     
