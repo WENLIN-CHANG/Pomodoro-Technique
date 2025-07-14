@@ -13,9 +13,17 @@ let pomodoroStats = {
     maxFocusTime: 0,
     currentFocusStart: null
 };
-const longBreakTime = 15 * 60; // 15分鐘的長休息
-const sessionsBeforeLongBreak = 4; // 4個工作時段後進行長休息
+let longBreakTime = 15 * 60; // 15分鐘的長休息
+let sessionsBeforeLongBreak = 4; // 4個工作時段後進行長休息
 let completedSessions = 0; // 追蹤完成的工作時段數
+
+// 時間設定物件
+let timeSettings = {
+    workTime: 25,
+    breakTime: 5,
+    longBreakTime: 15,
+    sessionsBeforeLongBreak: 4
+};
 
 // 通知功能
 async function requestNotificationPermission() {
@@ -349,6 +357,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // 添加鍵盤快捷鍵支持
     setupKeyboardShortcuts();
+    
+    // 載入時間設定
+    loadTimeSettings();
+    
+    // 添加設定按鈕事件監聽器
+    document.getElementById('save-settings').addEventListener('click', saveTimeSettings);
+    document.getElementById('reset-settings').addEventListener('click', resetTimeSettings);
 });
 
 // 鍵盤快捷鍵功能
@@ -395,4 +410,90 @@ function setupKeyboardShortcuts() {
                 break;
         }
     });
+}
+
+// 時間設定功能
+function saveTimeSettings() {
+    // 從輸入框獲取設定值
+    const workTimeValue = parseInt(document.getElementById('work-time').value);
+    const breakTimeValue = parseInt(document.getElementById('break-time').value);
+    const longBreakTimeValue = parseInt(document.getElementById('long-break-time').value);
+    const sessionsBeforeLongBreakValue = parseInt(document.getElementById('sessions-before-long-break').value);
+    
+    // 驗證輸入值
+    if (workTimeValue < 1 || workTimeValue > 60 || 
+        breakTimeValue < 1 || breakTimeValue > 30 || 
+        longBreakTimeValue < 1 || longBreakTimeValue > 60 ||
+        sessionsBeforeLongBreakValue < 2 || sessionsBeforeLongBreakValue > 10) {
+        alert('請輸入有效的時間設定！');
+        return;
+    }
+    
+    // 更新設定物件
+    timeSettings.workTime = workTimeValue;
+    timeSettings.breakTime = breakTimeValue;
+    timeSettings.longBreakTime = longBreakTimeValue;
+    timeSettings.sessionsBeforeLongBreak = sessionsBeforeLongBreakValue;
+    
+    // 更新全域變數
+    workTime = timeSettings.workTime * 60;
+    breakTime = timeSettings.breakTime * 60;
+    longBreakTime = timeSettings.longBreakTime * 60;
+    sessionsBeforeLongBreak = timeSettings.sessionsBeforeLongBreak;
+    
+    // 重置計時器狀態
+    resetTimer();
+    
+    // 儲存到本地存儲
+    localStorage.setItem('timeSettings', JSON.stringify(timeSettings));
+    
+    // 顯示成功訊息
+    showNotification('⚙️ 設定已保存', '時間設定已成功更新並應用！');
+    
+    // 更新顯示
+    updateSessionDisplay();
+}
+
+function loadTimeSettings() {
+    const savedSettings = localStorage.getItem('timeSettings');
+    if (savedSettings) {
+        timeSettings = JSON.parse(savedSettings);
+        
+        // 更新全域變數
+        workTime = timeSettings.workTime * 60;
+        breakTime = timeSettings.breakTime * 60;
+        longBreakTime = timeSettings.longBreakTime * 60;
+        sessionsBeforeLongBreak = timeSettings.sessionsBeforeLongBreak;
+        
+        // 更新輸入框顯示
+        document.getElementById('work-time').value = timeSettings.workTime;
+        document.getElementById('break-time').value = timeSettings.breakTime;
+        document.getElementById('long-break-time').value = timeSettings.longBreakTime;
+        document.getElementById('sessions-before-long-break').value = timeSettings.sessionsBeforeLongBreak;
+        
+        // 重置計時器顯示
+        currentTime = workTime;
+        updateTimerDisplay();
+    }
+}
+
+function resetTimeSettings() {
+    // 重置為預設值
+    timeSettings = {
+        workTime: 25,
+        breakTime: 5,
+        longBreakTime: 15,
+        sessionsBeforeLongBreak: 4
+    };
+    
+    // 更新輸入框
+    document.getElementById('work-time').value = timeSettings.workTime;
+    document.getElementById('break-time').value = timeSettings.breakTime;
+    document.getElementById('long-break-time').value = timeSettings.longBreakTime;
+    document.getElementById('sessions-before-long-break').value = timeSettings.sessionsBeforeLongBreak;
+    
+    // 自動保存重置的設定
+    saveTimeSettings();
+    
+    showNotification('🔄 設定已重置', '所有時間設定已重置為預設值！');
 }
