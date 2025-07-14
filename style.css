@@ -283,15 +283,6 @@ body {
   position: relative;
 }
 
-.todo-section::before {
-  content: '📝';
-  position: absolute;
-  top: -10px;
-  left: 20px;
-  background: white;
-  padding: 0 8px;
-  font-size: 1.2rem;
-}
 
 .todo-input {
   display: flex;
@@ -495,15 +486,6 @@ button:disabled {
     opacity: 0.95;
 }
 
-.stats-section::before {
-    content: '📈';
-    position: absolute;
-    top: -8px;
-    left: 20px;
-    background: white;
-    padding: 0 6px;
-    font-size: 1rem;
-}
 
 .stats-controls {
     margin-bottom: 20px;
