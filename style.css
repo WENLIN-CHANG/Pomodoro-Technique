@@ -630,15 +630,6 @@ kbd {
     position: relative;
 }
 
-.settings-section::before {
-    content: '⚙️';
-    position: absolute;
-    top: -10px;
-    left: 20px;
-    background: white;
-    padding: 0 8px;
-    font-size: 1.2rem;
-}
 
 .settings-section h2 {
     margin: 0 0 20px 0;
