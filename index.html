@@ -10,91 +10,103 @@
 </head>
 
 <body>
-  <div class="container">
-    <h1>番茄鐘</h1>
-    <div class="timer">
-      <span id="time-display">25:00</span>
-      <div class="sessions-info">
-        <span id="sessions-count">距離長休息還有 4 個工作時段</span>
-      </div>
-    </div>
-    <div class="controls">
-      <button id="start-btn">開始</button>
-      <button id="pause-btn">暫停</button>
-      <button id="reset-btn">重設</button>
-    </div>
-    <div class="cycles">
-      <p>完成週期: <span id="cycle-count">0</span></p>
-    </div>
-    <div class="keyboard-shortcuts">
-      <h3>快捷鍵</h3>
-      <div class="shortcuts-grid">
-        <div class="shortcut-item">
-          <kbd>空格</kbd> 開始/暫停
+  <div class="app-container">
+    <!-- 左欄：計時器主要功能 -->
+    <div class="timer-column">
+      <div class="timer-section">
+        <h1 class="app-title">番茄鐘</h1>
+        <div class="timer">
+          <span id="time-display">25:00</span>
+          <div class="sessions-info">
+            <span id="sessions-count">距離長休息還有 4 個工作時段</span>
+          </div>
         </div>
-        <div class="shortcut-item">
-          <kbd>R</kbd> 重置
+        <div class="controls">
+          <button id="start-btn">開始</button>
+          <button id="pause-btn">暫停</button>
+          <button id="reset-btn">重設</button>
         </div>
-        <div class="shortcut-item">
-          <kbd>1-9</kbd> 快速開始任務
-        </div>
-        <div class="shortcut-item">
-          <kbd>Enter</kbd> 新增待辦事項
+        <div class="cycles">
+          <p>完成週期: <span id="cycle-count">0</span></p>
         </div>
       </div>
     </div>
-    <div class="settings-section">
-      <h2>時間設定</h2>
-      <div class="settings-grid">
-        <div class="setting-item">
-          <label for="work-time">工作時間 (分鐘)</label>
-          <input type="number" id="work-time" min="1" max="60" value="25">
-        </div>
-        <div class="setting-item">
-          <label for="break-time">短休息 (分鐘)</label>
-          <input type="number" id="break-time" min="1" max="30" value="5">
-        </div>
-        <div class="setting-item">
-          <label for="long-break-time">長休息 (分鐘)</label>
-          <input type="number" id="long-break-time" min="1" max="60" value="15">
-        </div>
-        <div class="setting-item">
-          <label for="sessions-before-long-break">長休息前工作時段</label>
-          <input type="number" id="sessions-before-long-break" min="2" max="10" value="4">
+
+    <!-- 右欄：功能區域 -->
+    <div class="features-column">
+      <div class="keyboard-shortcuts">
+        <h3>快捷鍵</h3>
+        <div class="shortcuts-grid">
+          <div class="shortcut-item">
+            <kbd>空格</kbd> 開始/暫停
+          </div>
+          <div class="shortcut-item">
+            <kbd>R</kbd> 重置
+          </div>
+          <div class="shortcut-item">
+            <kbd>1-9</kbd> 快速開始任務
+          </div>
+          <div class="shortcut-item">
+            <kbd>Enter</kbd> 新增待辦事項
+          </div>
         </div>
       </div>
-      <button id="save-settings">保存設定</button>
-      <button id="reset-settings">重置為預設值</button>
-    </div>
-    <div class="todo-section">
-      <h2>待辦事項</h2>
-      <div class="todo-input">
-        <input type="text" id="todo-input" placeholder="輸入待辦事項...">
-        <button id="add-todo">新增</button>
-      </div>
-      <ul id="todo-list"></ul>
-    </div>
-    <div class="stats-section">
-      <h2>統計分析</h2>
-      <div class="stats-controls">
-        <button id="daily-stats">每日統計</button>
-        <button id="weekly-stats">每週統計</button>
-      </div>
-      <div class="stats-display">
-        <canvas id="statsChart"></canvas>
-      </div>
-      <div class="stats-summary">
-        <div class="stat-item">
-          <h3>今日完成週期</h3>
-          <span id="today-cycles">0</span>
+
+      <div class="settings-section">
+        <h2>時間設定</h2>
+        <div class="settings-grid">
+          <div class="setting-item">
+            <label for="work-time">工作時間 (分鐘)</label>
+            <input type="number" id="work-time" min="1" max="60" value="25">
+          </div>
+          <div class="setting-item">
+            <label for="break-time">短休息 (分鐘)</label>
+            <input type="number" id="break-time" min="1" max="30" value="5">
+          </div>
+          <div class="setting-item">
+            <label for="long-break-time">長休息 (分鐘)</label>
+            <input type="number" id="long-break-time" min="1" max="60" value="15">
+          </div>
+          <div class="setting-item">
+            <label for="sessions-before-long-break">長休息前工作時段</label>
+            <input type="number" id="sessions-before-long-break" min="2" max="10" value="4">
+          </div>
         </div>
-        <div class="stat-item">
-          <h3>本週完成週期</h3>
-          <span id="week-cycles">0</span>
+        <button id="save-settings">保存設定</button>
+        <button id="reset-settings">重置為預設值</button>
+      </div>
+
+      <div class="todo-section">
+        <h2>待辦事項</h2>
+        <div class="todo-input">
+          <input type="text" id="todo-input" placeholder="輸入待辦事項...">
+          <button id="add-todo">新增</button>
         </div>
-        <div class="stat-item">
-          <h3>最長專注時間</h3>
-          <span id="max-focus-time">0 分鐘</span>
+        <ul id="todo-list"></ul>
+      </div>
+
+      <div class="stats-section">
+        <h2>統計分析</h2>
+        <div class="stats-controls">
+          <button id="daily-stats">每日統計</button>
+          <button id="weekly-stats">每週統計</button>
+        </div>
+        <div class="stats-display">
+          <canvas id="statsChart"></canvas>
+        </div>
+        <div class="stats-summary">
+          <div class="stat-item">
+            <h3>今日完成週期</h3>
+            <span id="today-cycles">0</span>
+          </div>
+          <div class="stat-item">
+            <h3>本週完成週期</h3>
+            <span id="week-cycles">0</span>
+          </div>
+          <div class="stat-item">
+            <h3>最長專注時間</h3>
+            <span id="max-focus-time">0 分鐘</span>
+          </div>
         </div>
       </div>
     </div>

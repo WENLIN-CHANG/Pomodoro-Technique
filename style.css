@@ -1,9 +1,71 @@
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background-color: #f0f0f0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #333;
 }
 
+/* 新的分欄布局容器 */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  gap: 30px;
+}
+
+/* 左欄：計時器區域 */
+.timer-column {
+  flex: 0 0 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-section {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  max-width: 400px;
+}
+
+.app-title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #4a5568;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+}
+
+/* 右欄：功能區域 */
+.features-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  max-height: 100vh;
+  padding-right: 10px;
+}
+
+.features-column > div {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 舊的 container 樣式保持向後兼容 */
 .container {
   max-width: 400px;
   margin: 50px auto;
@@ -14,8 +76,22 @@ body {
 }
 
 .timer {
-  font-size: 48px;
+  font-size: 4rem;
   margin: 30px 0;
+  font-weight: 200;
+  color: #2d3748;
+}
+
+.timer #time-display {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 5rem;
+  font-weight: 300;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 15px;
 }
 
 .controls button {
@@ -399,17 +475,55 @@ kbd {
     background-color: #7f8c8d;
 }
 
-/* 響應式設計 - 平板和大手機 */
-@media screen and (max-width: 768px) {
-    .container {
-        max-width: 90%;
-        margin: 20px auto;
+/* 響應式設計 - 平板 */
+@media screen and (max-width: 1024px) {
+    .app-container {
+        flex-direction: column;
+        gap: 20px;
         padding: 15px;
     }
     
-    .timer {
-        font-size: 40px;
-        margin: 20px 0;
+    .timer-column {
+        flex: none;
+    }
+    
+    .timer-section {
+        padding: 30px;
+        max-width: none;
+    }
+    
+    .features-column {
+        max-height: none;
+        overflow-y: visible;
+    }
+    
+    .app-title {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+    
+    .timer #time-display {
+        font-size: 4rem;
+    }
+}
+
+/* 響應式設計 - 平板和大手機 */
+@media screen and (max-width: 768px) {
+    .app-container {
+        padding: 10px;
+        gap: 15px;
+    }
+    
+    .timer-section {
+        padding: 25px;
+    }
+    
+    .timer #time-display {
+        font-size: 3.5rem;
+    }
+    
+    .app-title {
+        font-size: 1.8rem;
     }
     
     .stats-summary {
@@ -447,15 +561,22 @@ kbd {
 
 /* 響應式設計 - 手機 */
 @media screen and (max-width: 480px) {
-    .container {
-        max-width: 95%;
-        margin: 10px auto;
-        padding: 10px;
+    .app-container {
+        padding: 8px;
+        gap: 12px;
     }
     
-    .timer {
-        font-size: 32px;
-        margin: 15px 0;
+    .timer-section {
+        padding: 20px;
+    }
+    
+    .timer #time-display {
+        font-size: 3rem;
+    }
+    
+    .app-title {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
     }
     
     .controls button {
