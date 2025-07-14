@@ -48,12 +48,12 @@ class PomodoroApp {
 
     // 初始化 DOM 元素快取
     initDOMCache() {
-        this.elements.todoList = document.getElementById('todo-list');
-        this.elements.todoInput = document.getElementById('todo-input');
-        this.elements.addTodoBtn = document.getElementById('add-todo');
-        this.elements.todayCycles = document.getElementById('today-cycles');
-        this.elements.weekCycles = document.getElementById('week-cycles');
-        this.elements.maxFocusTime = document.getElementById('max-focus-time');
+        this.elements.todoList = document.getElementById('todo_list');
+        this.elements.todoInput = document.getElementById('todo_input');
+        this.elements.addTodoBtn = document.getElementById('add_todo');
+        this.elements.todayCycles = document.getElementById('today_cycles');
+        this.elements.weekCycles = document.getElementById('week_cycles');
+        this.elements.maxFocusTime = document.getElementById('max_focus_time');
         this.elements.statsChart = document.getElementById('statsChart');
     }
 
@@ -213,11 +213,11 @@ class PomodoroApp {
         });
 
         // 統計按鈕
-        document.getElementById('daily-stats')?.addEventListener('click', () => {
+        document.getElementById('daily_stats')?.addEventListener('click', () => {
             this.updateChart('daily');
         });
 
-        document.getElementById('weekly-stats')?.addEventListener('click', () => {
+        document.getElementById('weekly_stats')?.addEventListener('click', () => {
             this.updateChart('weekly');
         });
 
@@ -370,15 +370,15 @@ class PomodoroApp {
     }
 
     updateCurrentTask() {
-        const taskElement = document.querySelector('.current-task');
+        const taskElement = document.querySelector('.current_task');
         if (taskElement) {
-            taskElement.classList.remove('current-task');
+            taskElement.classList.remove('current_task');
         }
         
         if (this.currentTaskId) {
             const newTaskElement = document.querySelector(`[data-id="${this.currentTaskId}"]`);
             if (newTaskElement) {
-                newTaskElement.classList.add('current-task');
+                newTaskElement.classList.add('current_task');
             }
         }
     }
@@ -390,7 +390,7 @@ class PomodoroApp {
 
         this.todos.forEach(todo => {
             const li = document.createElement('li');
-            li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+            li.className = `todo_item ${todo.completed ? 'completed' : ''}`;
             li.setAttribute('data-id', todo.id);
             
             // 安全的 DOM 操作，防止 XSS 攻擊
@@ -398,21 +398,21 @@ class PomodoroApp {
             textSpan.textContent = `${todo.text} (完成番茄數: ${todo.pomodoros})`;
             
             const controlsDiv = document.createElement('div');
-            controlsDiv.className = 'todo-controls';
+            controlsDiv.className = 'todo_controls';
             
             // 創建按鈕
             const startBtn = document.createElement('button');
-            startBtn.className = 'start-task';
+            startBtn.className = 'start_task';
             startBtn.setAttribute('data-id', todo.id);
             startBtn.textContent = '開始';
             
             const completeBtn = document.createElement('button');
-            completeBtn.className = 'complete-task';
+            completeBtn.className = 'complete_task';
             completeBtn.setAttribute('data-id', todo.id);
             completeBtn.textContent = todo.completed ? '取消完成' : '完成';
             
             const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-task';
+            deleteBtn.className = 'delete_task';
             deleteBtn.setAttribute('data-id', todo.id);
             deleteBtn.textContent = '刪除';
             

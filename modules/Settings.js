@@ -93,10 +93,10 @@ class SettingsManager {
      */
     getSettingsFromUI() {
         return {
-            workTime: parseInt(document.getElementById('work-time')?.value || this.defaultSettings.workTime),
-            breakTime: parseInt(document.getElementById('break-time')?.value || this.defaultSettings.breakTime),
-            longBreakTime: parseInt(document.getElementById('long-break-time')?.value || this.defaultSettings.longBreakTime),
-            sessionsBeforeLongBreak: parseInt(document.getElementById('sessions-before-long-break')?.value || this.defaultSettings.sessionsBeforeLongBreak)
+            workTime: parseInt(document.getElementById('work_time')?.value || this.defaultSettings.workTime),
+            breakTime: parseInt(document.getElementById('break_time')?.value || this.defaultSettings.breakTime),
+            longBreakTime: parseInt(document.getElementById('long-break_time')?.value || this.defaultSettings.longBreakTime),
+            sessionsBeforeLongBreak: parseInt(document.getElementById('sessions_before_long_break')?.value || this.defaultSettings.sessionsBeforeLongBreak)
         };
     }
 
@@ -105,10 +105,10 @@ class SettingsManager {
      */
     updateUI() {
         const elements = {
-            'work-time': this.settings.workTime,
-            'break-time': this.settings.breakTime,
-            'long-break-time': this.settings.longBreakTime,
-            'sessions-before-long-break': this.settings.sessionsBeforeLongBreak
+            'work_time': this.settings.workTime,
+            'break_time': this.settings.breakTime,
+            'long-break_time': this.settings.longBreakTime,
+            'sessions_before_long_break': this.settings.sessionsBeforeLongBreak
         };
 
         Object.entries(elements).forEach(([id, value]) => {
@@ -172,8 +172,8 @@ class SettingsManager {
      * 初始化事件監聽器
      */
     initEventListeners() {
-        const saveButton = document.getElementById('save-settings');
-        const resetButton = document.getElementById('reset-settings');
+        const saveButton = document.getElementById('save_settings');
+        const resetButton = document.getElementById('reset_settings');
 
         if (saveButton) {
             saveButton.addEventListener('click', () => this.saveSettings());

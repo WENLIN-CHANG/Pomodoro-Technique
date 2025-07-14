@@ -48,9 +48,9 @@ class TimerManager {
         });
 
         // 監聽按鈕事件
-        const startBtn = document.getElementById('start-btn');
-        const pauseBtn = document.getElementById('pause-btn');
-        const resetBtn = document.getElementById('reset-btn');
+        const startBtn = document.getElementById('start_btn');
+        const pauseBtn = document.getElementById('pause_btn');
+        const resetBtn = document.getElementById('reset_btn');
 
         if (startBtn) startBtn.addEventListener('click', () => this.start());
         if (pauseBtn) pauseBtn.addEventListener('click', () => this.pause());
@@ -220,7 +220,7 @@ class TimerManager {
         const seconds = this.currentTime % 60;
         const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         
-        const timeDisplay = document.getElementById('time-display');
+        const timeDisplay = document.getElementById('time_display');
         if (timeDisplay) {
             timeDisplay.textContent = timeString;
         }
@@ -233,7 +233,7 @@ class TimerManager {
      * 更新週期計數顯示
      */
     updateCycleCount() {
-        const cycleCountElement = document.getElementById('cycle-count');
+        const cycleCountElement = document.getElementById('cycle_count');
         if (cycleCountElement) {
             cycleCountElement.textContent = this.cycleCount;
         }
@@ -244,7 +244,7 @@ class TimerManager {
      */
     updateSessionDisplay() {
         const remainingSessions = this.settings.getSessionsBeforeLongBreak() - this.completedSessions;
-        const sessionsCountElement = document.getElementById('sessions-count');
+        const sessionsCountElement = document.getElementById('sessions_count');
         if (sessionsCountElement) {
             sessionsCountElement.textContent = `距離長休息還有 ${remainingSessions} 個工作時段`;
         }

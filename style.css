@@ -8,7 +8,7 @@ body {
 }
 
 /* 新的分欄布局容器 */
-.app-container {
+.app_container {
   display: flex;
   min-height: 100vh;
   max-width: 1400px;
@@ -18,14 +18,14 @@ body {
 }
 
 /* 左欄：計時器區域 */
-.timer-column {
+.timer_column {
   flex: 0 0 40%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.timer-section {
+.timer_section {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 20px;
@@ -37,7 +37,7 @@ body {
   max-width: 400px;
 }
 
-.app-title {
+.app_title {
   font-size: 2.5rem;
   font-weight: 300;
   color: #4a5568;
@@ -46,7 +46,7 @@ body {
 }
 
 /* 右欄：功能區域 */
-.features-column {
+.features_column {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -57,7 +57,7 @@ body {
 }
 
 /* Level 3,4,5: 功能區塊標題層次 */
-.features-column > div {
+.features_column > div {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
   border-radius: 16px;
@@ -67,14 +67,14 @@ body {
   transition: all 0.3s ease;
 }
 
-.features-column > div:hover {
+.features_column > div:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 /* Level 3: 重要功能區塊標題 */
-.settings-section h2,
-.todo-section h2 {
+.settings_section h2,
+.todo_section h2 {
   font-size: 1.4rem;
   font-weight: 700;
   color: #2d3748;
@@ -84,8 +84,8 @@ body {
   position: relative;
 }
 
-.settings-section h2::after,
-.todo-section h2::after {
+.settings_section h2::after,
+.todo_section h2::after {
   content: '';
   position: absolute;
   bottom: -3px;
@@ -97,7 +97,7 @@ body {
 }
 
 /* Level 4: 次要功能區塊標題 */
-.stats-section h2 {
+.stats_section h2 {
   font-size: 1.2rem;
   font-weight: 600;
   color: #4a5568;
@@ -107,7 +107,7 @@ body {
 }
 
 /* Level 5: 輔助資訊標題 */
-.keyboard-shortcuts h3 {
+.keyboard_shortcuts h3 {
   font-size: 1rem;
   font-weight: 600;
   color: #718096;
@@ -116,7 +116,7 @@ body {
   letter-spacing: 1px;
 }
 
-.stats-section .stat-item h3 {
+.stats_section .stat_item h3 {
   font-size: 0.9rem;
   font-weight: 500;
   color: #a0aec0;
@@ -142,7 +142,7 @@ body {
   color: #2d3748;
 }
 
-.timer #time-display {
+.timer #time_display {
   display: block;
   font-family: 'Courier New', monospace;
   font-size: 6rem;
@@ -168,16 +168,16 @@ body {
 }
 
 /* 計時器運行時的動態效果 */
-.timer.running #time-display {
+.timer.running #time_display {
   animation: pulse-glow 1s ease-in-out infinite alternate;
 }
 
 /* 工作/休息狀態指示 */
-.timer-section.working {
+.timer_section.working {
   border-left: 4px solid #667eea;
 }
 
-.timer-section.breaking {
+.timer_section.breaking {
   border-left: 4px solid #48bb78;
 }
 
@@ -219,30 +219,30 @@ body {
 }
 
 /* 按鈕狀態顏色 */
-#start-btn {
+#start_btn {
   background: linear-gradient(135deg, #48bb78, #38a169);
   color: white;
 }
 
-#start-btn:hover {
+#start_btn:hover {
   background: linear-gradient(135deg, #38a169, #2f855a);
 }
 
-#pause-btn {
+#pause_btn {
   background: linear-gradient(135deg, #ed8936, #dd6b20);
   color: white;
 }
 
-#pause-btn:hover {
+#pause_btn:hover {
   background: linear-gradient(135deg, #dd6b20, #c05621);
 }
 
-#reset-btn {
+#reset_btn {
   background: linear-gradient(135deg, #e53e3e, #c53030);
   color: white;
 }
 
-#reset-btn:hover {
+#reset_btn:hover {
   background: linear-gradient(135deg, #c53030, #9c2a2a);
 }
 
@@ -262,14 +262,14 @@ body {
   color: #4a5568;
 }
 
-.cycles #cycle-count {
+.cycles #cycle_count {
   color: #667eea;
   font-size: 1.5rem;
   font-weight: 700;
 }
 
 /* Level 3: 重要功能區塊 */
-.todo-section {
+.todo_section {
   margin-top: 30px;
   padding: 24px;
   background: linear-gradient(135deg, rgba(72, 187, 120, 0.08), rgba(56, 161, 105, 0.08));
@@ -279,31 +279,31 @@ body {
 }
 
 
-.todo-input {
+.todo_input {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
 }
 
-.todo-input input {
+.todo_input input {
   flex: 1;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.todo-input button {
+.todo_input button {
   padding: 8px 15px;
   background-color: #4CAF50;
   color: white;
 }
 
-#todo-list {
+#todo_list {
   list-style: none;
   padding: 0;
 }
 
-.todo-item {
+.todo_item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -314,47 +314,47 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.todo-item.completed {
+.todo_item.completed {
   background-color: #e8f5e9;
   text-decoration: line-through;
 }
 
-.todo-controls {
+.todo_controls {
   display: flex;
   gap: 10px;
 }
 
-.todo-controls button {
+.todo_controls button {
   padding: 5px 10px;
 }
 
 /* 待辦事項按鈕優化 */
-.start-task {
+.start_task {
   background: linear-gradient(135deg, #3182ce, #2c5282);
   color: white;
 }
 
-.start-task:hover {
+.start_task:hover {
   background: linear-gradient(135deg, #2c5282, #2a4365);
   transform: translateY(-1px);
 }
 
-.complete-task {
+.complete_task {
   background: linear-gradient(135deg, #48bb78, #38a169);
   color: white;
 }
 
-.complete-task:hover {
+.complete_task:hover {
   background: linear-gradient(135deg, #38a169, #2f855a);
   transform: translateY(-1px);
 }
 
-.delete-task {
+.delete_task {
   background: linear-gradient(135deg, #e53e3e, #c53030);
   color: white;
 }
 
-.delete-task:hover {
+.delete_task:hover {
   background: linear-gradient(135deg, #c53030, #9c2a2a);
   transform: translateY(-1px);
 }
@@ -377,9 +377,9 @@ button:active {
 
 /* 控制區域按鈕樣式已合併到上方的 .controls button 定義中 */
 
-/* 待辦事項按鈕樣式已合併到上方的 .todo-controls button 定義中 */
+/* 待辦事項按鈕樣式已合併到上方的 .todo_controls button 定義中 */
 
-/* 新增待辦事項按鈕樣式已合併到上方的 .todo-input button 定義中 */
+/* 新增待辦事項按鈕樣式已合併到上方的 .todo_input button 定義中 */
 
 /* 懸停效果已合併到上方的各按鈕定義中 */
 
@@ -394,7 +394,7 @@ button:disabled {
 /* 懸停效果已合併到上方的各按鈕定義中 */
 
 /* Level 4: 次要功能區塊 */
-.stats-section {
+.stats_section {
     margin-top: 30px;
     padding: 20px;
     background: linear-gradient(135deg, rgba(113, 128, 150, 0.05), rgba(160, 174, 192, 0.05));
@@ -405,12 +405,12 @@ button:disabled {
 }
 
 
-.stats-controls {
+.stats_controls {
     margin-bottom: 20px;
     text-align: center;
 }
 
-.stats-controls button {
+.stats_controls button {
     margin: 0 10px;
     padding: 8px 16px;
     background-color: #4CAF50;
@@ -420,11 +420,11 @@ button:disabled {
     cursor: pointer;
 }
 
-.stats-controls button:hover {
+.stats_controls button:hover {
     background-color: #45a049;
 }
 
-.stats-display {
+.stats_display {
     margin: 20px 0;
     padding: 15px;
     background-color: white;
@@ -432,36 +432,36 @@ button:disabled {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.stats-summary {
+.stats_summary {
     display: flex;
     justify-content: space-around;
     margin-top: 20px;
 }
 
-.stat-item {
+.stat_item {
     text-align: center;
     padding: 10px;
 }
 
-.stat-item h3 {
+.stat_item h3 {
     margin-bottom: 10px;
     color: #666;
 }
 
-.stat-item span {
+.stat_item span {
     font-size: 24px;
     font-weight: bold;
     color: #4CAF50;
 }
 
-.sessions-info {
+.sessions_info {
     margin-top: 10px;
     font-size: 0.9em;
     color: #666;
     text-align: center;
 }
 
-#sessions-count {
+#sessions_count {
     padding: 5px 10px;
     background-color: #f0f0f0;
     border-radius: 4px;
@@ -470,7 +470,7 @@ button:disabled {
 }
 
 /* Level 5: 輔助資訊區塊 - 最低視覺重量 */
-.keyboard-shortcuts {
+.keyboard_shortcuts {
     margin: 20px 0;
     padding: 15px;
     background: linear-gradient(135deg, rgba(113, 128, 150, 0.05), rgba(160, 174, 192, 0.05));
@@ -479,25 +479,25 @@ button:disabled {
     opacity: 0.8;
 }
 
-.keyboard-shortcuts:hover {
+.keyboard_shortcuts:hover {
     opacity: 1;
     transition: opacity 0.3s ease;
 }
 
-.keyboard-shortcuts h3 {
+.keyboard_shortcuts h3 {
     margin: 0 0 15px 0;
     font-size: 16px;
     color: #495057;
     text-align: center;
 }
 
-.shortcuts-grid {
+.shortcuts_grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
 
-.shortcut-item {
+.shortcut_item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -521,7 +521,7 @@ kbd {
 
 /* 時間設定區域樣式 */
 /* Level 3: 重要功能區塊 */
-.settings-section {
+.settings_section {
     margin-top: 30px;
     padding: 24px;
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
@@ -531,32 +531,32 @@ kbd {
 }
 
 
-.settings-section h2 {
+.settings_section h2 {
     margin: 0 0 20px 0;
     color: #2c3e50;
     text-align: center;
 }
 
-.settings-grid {
+.settings_grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     margin-bottom: 20px;
 }
 
-.setting-item {
+.setting_item {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-.setting-item label {
+.setting_item label {
     font-size: 14px;
     font-weight: bold;
     color: #34495e;
 }
 
-.setting-item input {
+.setting_item input {
     padding: 8px 12px;
     border: 1px solid #bdc3c7;
     border-radius: 4px;
@@ -564,13 +564,13 @@ kbd {
     background-color: white;
 }
 
-.setting-item input:focus {
+.setting_item input:focus {
     outline: none;
     border-color: #3498db;
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
 }
 
-#save-settings {
+#save_settings {
     background-color: #27ae60;
     color: white;
     padding: 10px 20px;
@@ -582,11 +582,11 @@ kbd {
     transition: background-color 0.3s;
 }
 
-#save-settings:hover {
+#save_settings:hover {
     background-color: #229954;
 }
 
-#reset-settings {
+#reset_settings {
     background-color: #95a5a6;
     color: white;
     padding: 10px 20px;
@@ -597,89 +597,89 @@ kbd {
     transition: background-color 0.3s;
 }
 
-#reset-settings:hover {
+#reset_settings:hover {
     background-color: #7f8c8d;
 }
 
 /* 響應式設計 - 平板 */
 @media screen and (max-width: 1024px) {
-    .app-container {
+    .app_container {
         flex-direction: column;
         gap: 20px;
         padding: 15px;
     }
     
-    .timer-column {
+    .timer_column {
         flex: none;
     }
     
-    .timer-section {
+    .timer_section {
         padding: 30px;
         max-width: none;
     }
     
-    .features-column {
+    .features_column {
         max-height: none;
         overflow-y: visible;
     }
     
-    .app-title {
+    .app_title {
         font-size: 2rem;
         margin-bottom: 20px;
     }
     
-    .timer #time-display {
+    .timer #time_display {
         font-size: 4rem;
     }
 }
 
 /* 響應式設計 - 平板和大手機 */
 @media screen and (max-width: 768px) {
-    .app-container {
+    .app_container {
         padding: 10px;
         gap: 15px;
     }
     
-    .timer-section {
+    .timer_section {
         padding: 25px;
     }
     
-    .timer #time-display {
+    .timer #time_display {
         font-size: 3.5rem;
     }
     
-    .app-title {
+    .app_title {
         font-size: 1.8rem;
     }
     
-    .stats-summary {
+    .stats_summary {
         flex-direction: column;
         gap: 15px;
     }
     
-    .stat-item {
+    .stat_item {
         padding: 15px;
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
-    .keyboard-shortcuts {
+    .keyboard_shortcuts {
         margin: 15px 0;
         padding: 12px;
     }
     
-    .shortcuts-grid {
+    .shortcuts_grid {
         grid-template-columns: 1fr;
         gap: 8px;
     }
     
-    .settings-section {
+    .settings_section {
         margin-top: 20px;
         padding: 15px;
     }
     
-    .settings-grid {
+    .settings_grid {
         grid-template-columns: 1fr;
         gap: 12px;
     }
@@ -687,20 +687,20 @@ kbd {
 
 /* 響應式設計 - 手機 */
 @media screen and (max-width: 480px) {
-    .app-container {
+    .app_container {
         padding: 8px;
         gap: 12px;
     }
     
-    .timer-section {
+    .timer_section {
         padding: 20px;
     }
     
-    .timer #time-display {
+    .timer #time_display {
         font-size: 3rem;
     }
     
-    .app-title {
+    .app_title {
         font-size: 1.5rem;
         margin-bottom: 15px;
     }
@@ -713,55 +713,55 @@ kbd {
         min-width: 80px;
     }
     
-    .todo-controls {
+    .todo_controls {
         flex-direction: column;
         gap: 8px;
         align-items: stretch;
     }
     
-    .todo-controls button {
+    .todo_controls button {
         min-height: 44px;
         padding: 10px 15px;
         font-size: 14px;
     }
     
-    .todo-input {
+    .todo_input {
         flex-direction: column;
         gap: 10px;
     }
     
-    .todo-input button {
+    .todo_input button {
         min-height: 44px;
         padding: 12px 20px;
         font-size: 16px;
     }
     
-    .stats-controls button {
+    .stats_controls button {
         margin: 5px;
         padding: 10px 15px;
         min-height: 44px;
         font-size: 14px;
     }
     
-    .stats-display {
+    .stats_display {
         padding: 10px;
     }
     
-    #sessions-count {
+    #sessions_count {
         font-size: 0.8em;
         padding: 8px 12px;
     }
     
-    .keyboard-shortcuts {
+    .keyboard_shortcuts {
         margin: 10px 0;
         padding: 10px;
     }
     
-    .keyboard-shortcuts h3 {
+    .keyboard_shortcuts h3 {
         font-size: 14px;
     }
     
-    .shortcut-item {
+    .shortcut_item {
         font-size: 12px;
     }
     
@@ -770,16 +770,16 @@ kbd {
         padding: 3px 6px;
     }
     
-    .settings-section {
+    .settings_section {
         margin-top: 15px;
         padding: 12px;
     }
     
-    .settings-grid {
+    .settings_grid {
         gap: 10px;
     }
     
-    #save-settings, #reset-settings {
+    #save_settings, #reset_settings {
         width: 100%;
         margin: 5px 0;
         padding: 12px;
@@ -806,36 +806,36 @@ kbd {
         min-width: 70px;
     }
     
-    .todo-item {
+    .todo_item {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
     }
     
-    .todo-controls {
+    .todo_controls {
         width: 100%;
         flex-direction: row;
         justify-content: space-between;
     }
     
-    .todo-controls button {
+    .todo_controls button {
         flex: 1;
         margin: 0 2px;
         min-height: 44px;
         font-size: 12px;
     }
     
-    .keyboard-shortcuts {
+    .keyboard_shortcuts {
         margin: 8px 0;
         padding: 8px;
     }
     
-    .keyboard-shortcuts h3 {
+    .keyboard_shortcuts h3 {
         font-size: 13px;
         margin-bottom: 10px;
     }
     
-    .shortcut-item {
+    .shortcut_item {
         font-size: 11px;
     }
     
@@ -845,20 +845,20 @@ kbd {
         min-width: 20px;
     }
     
-    .settings-section {
+    .settings_section {
         margin-top: 10px;
         padding: 10px;
     }
     
-    .settings-section h2 {
+    .settings_section h2 {
         font-size: 18px;
     }
     
-    .setting-item label {
+    .setting_item label {
         font-size: 12px;
     }
     
-    .setting-item input {
+    .setting_item input {
         font-size: 14px;
         padding: 8px;
     }
