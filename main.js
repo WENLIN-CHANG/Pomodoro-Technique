@@ -26,12 +26,35 @@ class PomodoroApp {
         
         // 圖表實例
         this.currentChart = null;
+        this.currentChartType = 'daily';
+        
+        // DOM 元素快取
+        this.elements = {
+            todoList: null,
+            todoInput: null,
+            addTodoBtn: null,
+            todayCycles: null,
+            weekCycles: null,
+            maxFocusTime: null,
+            statsChart: null
+        };
         
         // 錯誤處理系統
         this.setupErrorHandling();
         
         // 初始化應用
         this.init();
+    }
+
+    // 初始化 DOM 元素快取
+    initDOMCache() {
+        this.elements.todoList = document.getElementById('todo-list');
+        this.elements.todoInput = document.getElementById('todo-input');
+        this.elements.addTodoBtn = document.getElementById('add-todo');
+        this.elements.todayCycles = document.getElementById('today-cycles');
+        this.elements.weekCycles = document.getElementById('week-cycles');
+        this.elements.maxFocusTime = document.getElementById('max-focus-time');
+        this.elements.statsChart = document.getElementById('statsChart');
     }
 
     setupErrorHandling() {
@@ -119,6 +142,9 @@ class PomodoroApp {
 
     async init() {
         try {
+            // 初始化 DOM 元素快取
+            this.initDOMCache();
+            
             // 請求通知權限
             await this.notifications.requestPermission();
             
@@ -168,16 +194,15 @@ class PomodoroApp {
 
     setupEventListeners() {
         // 待辦事項相關
-        document.getElementById('add-todo')?.addEventListener('click', () => {
-            const input = document.getElementById('todo-input');
-            const text = input.value.trim();
+        this.elements.addTodoBtn?.addEventListener('click', () => {
+            const text = this.elements.todoInput.value.trim();
             if (text) {
                 this.addTodo(text);
-                input.value = '';
+                this.elements.todoInput.value = '';
             }
         });
 
-        document.getElementById('todo-input')?.addEventListener('keypress', (e) => {
+        this.elements.todoInput?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const text = e.target.value.trim();
                 if (text) {
@@ -268,15 +293,43 @@ class PomodoroApp {
 
     // 待辦事項管理
     addTodo(text) {
+        // 輸入驗證和清理
+        const sanitizedText = this.sanitizeInput(text);
+        if (!sanitizedText || sanitizedText.length === 0) {
+            this.showErrorMessage('請輸入有效的待辦事項內容');
+            return;
+        }
+        
+        if (sanitizedText.length > 200) {
+            this.showErrorMessage('待辦事項內容不能超過200個字符');
+            return;
+        }
+        
         const todo = {
             id: Date.now(),
-            text: text,
+            text: sanitizedText,
             completed: false,
             pomodoros: 0
         };
         this.todos.push(todo);
         this.renderTodos();
         this.saveTodos();
+    }
+
+    // 輸入清理函數
+    sanitizeInput(input) {
+        if (typeof input !== 'string') return '';
+        
+        // 移除前後空白
+        let sanitized = input.trim();
+        
+        // 移除潛在的 HTML 標籤
+        sanitized = sanitized.replace(/<[^>]*>/g, '');
+        
+        // 移除特殊字符，只保留中文、英文、數字和基本標點符號
+        sanitized = sanitized.replace(/[^\u4e00-\u9fa5\w\s\.\,\!\?\-\(\)\[\]]/g, '');
+        
+        return sanitized;
     }
 
     deleteTodo(id) {
@@ -313,35 +366,52 @@ class PomodoroApp {
     }
 
     renderTodos() {
-        const todoList = document.getElementById('todo-list');
-        if (!todoList) return;
+        if (!this.elements.todoList) return;
         
-        todoList.innerHTML = '';
+        this.elements.todoList.innerHTML = '';
 
         this.todos.forEach(todo => {
             const li = document.createElement('li');
             li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
             li.setAttribute('data-id', todo.id);
             
-            li.innerHTML = `
-                <span>${todo.text} (完成番茄數: ${todo.pomodoros})</span>
-                <div class="todo-controls">
-                    <button class="start-task" data-id="${todo.id}">開始</button>
-                    <button class="complete-task" data-id="${todo.id}">${todo.completed ? '取消完成' : '完成'}</button>
-                    <button class="delete-task" data-id="${todo.id}">刪除</button>
-                </div>
-            `;
+            // 安全的 DOM 操作，防止 XSS 攻擊
+            const textSpan = document.createElement('span');
+            textSpan.textContent = `${todo.text} (完成番茄數: ${todo.pomodoros})`;
+            
+            const controlsDiv = document.createElement('div');
+            controlsDiv.className = 'todo-controls';
+            
+            // 創建按鈕
+            const startBtn = document.createElement('button');
+            startBtn.className = 'start-task';
+            startBtn.setAttribute('data-id', todo.id);
+            startBtn.textContent = '開始';
+            
+            const completeBtn = document.createElement('button');
+            completeBtn.className = 'complete-task';
+            completeBtn.setAttribute('data-id', todo.id);
+            completeBtn.textContent = todo.completed ? '取消完成' : '完成';
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-task';
+            deleteBtn.setAttribute('data-id', todo.id);
+            deleteBtn.textContent = '刪除';
             
             // 添加事件監聽器
-            const startBtn = li.querySelector('.start-task');
-            const completeBtn = li.querySelector('.complete-task');
-            const deleteBtn = li.querySelector('.delete-task');
-            
             startBtn.addEventListener('click', () => this.startTask(todo.id));
             completeBtn.addEventListener('click', () => this.completeTodo(todo.id));
             deleteBtn.addEventListener('click', () => this.deleteTodo(todo.id));
             
-            todoList.appendChild(li);
+            // 組裝 DOM
+            controlsDiv.appendChild(startBtn);
+            controlsDiv.appendChild(completeBtn);
+            controlsDiv.appendChild(deleteBtn);
+            
+            li.appendChild(textSpan);
+            li.appendChild(controlsDiv);
+            
+            this.elements.todoList.appendChild(li);
         });
         this.updateCurrentTask();
     }
@@ -386,21 +456,18 @@ class PomodoroApp {
         const weekNumber = this.getWeekNumber(new Date());
         
         // 更新今日完成週期
-        const todayCycles = document.getElementById('today-cycles');
-        if (todayCycles) {
-            todayCycles.textContent = this.pomodoroStats.daily[today] || 0;
+        if (this.elements.todayCycles) {
+            this.elements.todayCycles.textContent = this.pomodoroStats.daily[today] || 0;
         }
         
         // 更新本週完成週期
-        const weekCycles = document.getElementById('week-cycles');
-        if (weekCycles) {
-            weekCycles.textContent = this.pomodoroStats.weekly[weekNumber] || 0;
+        if (this.elements.weekCycles) {
+            this.elements.weekCycles.textContent = this.pomodoroStats.weekly[weekNumber] || 0;
         }
         
         // 更新最長專注時間
-        const maxFocusTime = document.getElementById('max-focus-time');
-        if (maxFocusTime) {
-            maxFocusTime.textContent = `${this.pomodoroStats.maxFocusTime} 分鐘`;
+        if (this.elements.maxFocusTime) {
+            this.elements.maxFocusTime.textContent = `${this.pomodoroStats.maxFocusTime} 分鐘`;
         }
         
         // 更新圖表
@@ -409,60 +476,77 @@ class PomodoroApp {
 
     updateChart(type = 'daily') {
         try {
-            const canvas = document.getElementById('statsChart');
-            if (!canvas || typeof Chart === 'undefined') return;
+            if (!this.elements.statsChart || typeof Chart === 'undefined') return;
             
-            // 銷毀現有圖表
+            const data = type === 'daily' ? this.pomodoroStats.daily : this.pomodoroStats.weekly;
+            
+            // 處理標籤格式
+            let labels = Object.keys(data).slice(-7);
+            if (type === 'daily') {
+                // 將日期格式從 "YYYY/MM/DD" 轉換為 "MM/DD"
+                labels = labels.map(dateStr => {
+                    const date = new Date(dateStr);
+                    if (isNaN(date.getTime())) {
+                        // 如果日期格式不標準，嘗試其他格式
+                        const parts = dateStr.split('/');
+                        if (parts.length === 3) {
+                            return `${parts[1].padStart(2, '0')}/${parts[2].padStart(2, '0')}`;
+                        }
+                        return dateStr;
+                    }
+                    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    const day = date.getDate().toString().padStart(2, '0');
+                    return `${month}/${day}`;
+                });
+            }
+            
+            const chartData = Object.values(data).slice(-7);
+            
+            // 如果圖表已存在且類型相同，只更新數據
+            if (this.currentChart && this.currentChartType === type) {
+                this.currentChart.data.labels = labels;
+                this.currentChart.data.datasets[0].data = chartData;
+                this.currentChart.data.datasets[0].label = type === 'daily' ? '每日完成週期' : '每週完成週期';
+                this.currentChart.update('none'); // 使用 'none' 動畫模式提升效能
+                return;
+            }
+            
+            // 如果圖表類型改變，銷毀舊圖表
             if (this.currentChart) {
                 this.currentChart.destroy();
             }
             
-            const ctx = canvas.getContext('2d');
-            const data = type === 'daily' ? this.pomodoroStats.daily : this.pomodoroStats.weekly;
-        
-        // 處理標籤格式
-        let labels = Object.keys(data).slice(-7);
-        if (type === 'daily') {
-            // 將日期格式從 "YYYY/MM/DD" 轉換為 "MM/DD"
-            labels = labels.map(dateStr => {
-                const date = new Date(dateStr);
-                if (isNaN(date.getTime())) {
-                    // 如果日期格式不標準，嘗試其他格式
-                    const parts = dateStr.split('/');
-                    if (parts.length === 3) {
-                        return `${parts[1].padStart(2, '0')}/${parts[2].padStart(2, '0')}`;
-                    }
-                    return dateStr;
-                }
-                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                const day = date.getDate().toString().padStart(2, '0');
-                return `${month}/${day}`;
-            });
-        }
-        
-        this.currentChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: type === 'daily' ? '每日完成週期' : '每週完成週期',
-                    data: Object.values(data).slice(-7),
-                    backgroundColor: '#4CAF50',
-                    borderColor: '#45a049',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
+            const ctx = this.elements.statsChart.getContext('2d');
+            this.currentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: type === 'daily' ? '每日完成週期' : '每週完成週期',
+                        data: chartData,
+                        backgroundColor: '#4CAF50',
+                        borderColor: '#45a049',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 300 // 減少動畫時間
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+            
+            this.currentChartType = type;
         } catch (error) {
             this.handleError(error, '更新圖表失敗');
         }

@@ -16,6 +16,11 @@ class TimerManager {
         this.completedSessions = 0;
         this.currentTaskId = null;
         
+        // 高精度計時器
+        this.startTime = null;
+        this.pausedTime = 0;
+        this.originalDuration = 0;
+        
         // 統計相關
         this.currentFocusStart = null;
         
@@ -71,7 +76,18 @@ class TimerManager {
             this.currentFocusStart = Date.now();
         }
 
-        this.timer = setInterval(() => this.tick(), 1000);
+        // 高精度計時器初始化
+        if (this.startTime === null) {
+            // 第一次開始
+            this.startTime = Date.now();
+            this.originalDuration = this.currentTime;
+            this.pausedTime = 0;
+        } else {
+            // 從暫停狀態重新開始
+            this.startTime = Date.now();
+        }
+
+        this.timer = setInterval(() => this.tick(), 100); // 更高頻率更新
         this.triggerStateChanged();
     }
 
@@ -82,6 +98,12 @@ class TimerManager {
         if (this.timer) {
             clearInterval(this.timer);
         }
+        
+        // 計算已暫停的時間
+        if (this.startTime) {
+            this.pausedTime += Date.now() - this.startTime;
+        }
+        
         this.isRunning = false;
         this.triggerStateChanged();
     }
@@ -95,6 +117,12 @@ class TimerManager {
             this.settings.getTimeInSeconds('work') : 
             this.settings.getTimeInSeconds('break');
         this.completedSessions = 0;
+        
+        // 重置高精度計時器變數
+        this.startTime = null;
+        this.pausedTime = 0;
+        this.originalDuration = 0;
+        
         this.updateDisplay();
         this.updateSessionDisplay();
         this.triggerStateChanged();
@@ -104,7 +132,13 @@ class TimerManager {
      * 計時器滴答
      */
     tick() {
-        this.currentTime--;
+        if (!this.isRunning) return;
+        
+        // 使用高精度時間計算
+        const elapsed = (Date.now() - this.startTime + this.pausedTime) / 1000;
+        const remainingTime = Math.max(0, this.originalDuration - elapsed);
+        
+        this.currentTime = Math.ceil(remainingTime);
         this.updateDisplay();
 
         if (this.currentTime === 0) {
