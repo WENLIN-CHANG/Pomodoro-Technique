@@ -38,6 +38,9 @@ class PomodoroApp {
         this.settings = new window.SettingsManager(this.storage, this.notifications);
         this.timer = new window.TimerManager(this.settings, this.notifications);
         
+        // 圖表實例
+        this.currentChart = null;
+        
         // 初始化應用
         this.init();
     }
@@ -310,10 +313,15 @@ class PomodoroApp {
         const canvas = document.getElementById('statsChart');
         if (!canvas || typeof Chart === 'undefined') return;
         
+        // 銷毀現有圖表
+        if (this.currentChart) {
+            this.currentChart.destroy();
+        }
+        
         const ctx = canvas.getContext('2d');
         const data = type === 'daily' ? pomodoroStats.daily : pomodoroStats.weekly;
         
-        new Chart(ctx, {
+        this.currentChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: Object.keys(data).slice(-7),
