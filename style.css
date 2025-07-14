@@ -275,3 +275,129 @@ button:disabled {
     display: inline-block;
     font-size: 0.5em;
 }
+
+/* 響應式設計 - 平板和大手機 */
+@media screen and (max-width: 768px) {
+    .container {
+        max-width: 90%;
+        margin: 20px auto;
+        padding: 15px;
+    }
+    
+    .timer {
+        font-size: 40px;
+        margin: 20px 0;
+    }
+    
+    .stats-summary {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .stat-item {
+        padding: 15px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+}
+
+/* 響應式設計 - 手機 */
+@media screen and (max-width: 480px) {
+    .container {
+        max-width: 95%;
+        margin: 10px auto;
+        padding: 10px;
+    }
+    
+    .timer {
+        font-size: 32px;
+        margin: 15px 0;
+    }
+    
+    .controls button {
+        margin: 5px;
+        padding: 12px 18px;
+        font-size: 14px;
+        min-height: 44px;
+        min-width: 80px;
+    }
+    
+    .todo-controls {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+    
+    .todo-controls button {
+        min-height: 44px;
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .todo-input {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .todo-input button {
+        min-height: 44px;
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+    
+    .stats-controls button {
+        margin: 5px;
+        padding: 10px 15px;
+        min-height: 44px;
+        font-size: 14px;
+    }
+    
+    .stats-display {
+        padding: 10px;
+    }
+    
+    #sessions-count {
+        font-size: 0.8em;
+        padding: 8px 12px;
+    }
+}
+
+/* 響應式設計 - 小手機 */
+@media screen and (max-width: 360px) {
+    .container {
+        margin: 5px auto;
+        padding: 8px;
+    }
+    
+    .timer {
+        font-size: 28px;
+        margin: 10px 0;
+    }
+    
+    .controls button {
+        margin: 3px;
+        padding: 10px 15px;
+        font-size: 13px;
+        min-width: 70px;
+    }
+    
+    .todo-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .todo-controls {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .todo-controls button {
+        flex: 1;
+        margin: 0 2px;
+        min-height: 44px;
+        font-size: 12px;
+    }
+}
