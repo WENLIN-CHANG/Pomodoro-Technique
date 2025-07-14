@@ -186,7 +186,10 @@ body {
   margin: 20px 0;
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .controls button {
@@ -195,14 +198,19 @@ body {
   font-size: 15px;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: none;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   flex: 1;
   max-width: 100px;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.controls button:first-child {
+  border-left: none;
 }
 
 .controls button:hover {
