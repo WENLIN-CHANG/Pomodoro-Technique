@@ -321,10 +321,30 @@ class PomodoroApp {
         const ctx = canvas.getContext('2d');
         const data = type === 'daily' ? pomodoroStats.daily : pomodoroStats.weekly;
         
+        // 處理標籤格式
+        let labels = Object.keys(data).slice(-7);
+        if (type === 'daily') {
+            // 將日期格式從 "YYYY/MM/DD" 轉換為 "MM/DD"
+            labels = labels.map(dateStr => {
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) {
+                    // 如果日期格式不標準，嘗試其他格式
+                    const parts = dateStr.split('/');
+                    if (parts.length === 3) {
+                        return `${parts[1].padStart(2, '0')}/${parts[2].padStart(2, '0')}`;
+                    }
+                    return dateStr;
+                }
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                return `${month}/${day}`;
+            });
+        }
+        
         this.currentChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: Object.keys(data).slice(-7),
+                labels: labels,
                 datasets: [{
                     label: type === 'daily' ? '每日完成週期' : '每週完成週期',
                     data: Object.values(data).slice(-7),
